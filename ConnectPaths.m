@@ -36,3 +36,10 @@ for j=ii  %j taking on the indices of a where a(j) corresponds to a directory.
     end
 end
 
+%% need DirectoriesOfShame at the end
+try
+addpath([pwd '/DirectoryOfShame'],'-end');
+addpath([pwd '/DirectoryOfShame2'],'-end');
+catch
+    disp('directoriesofshame not added to path');
+end

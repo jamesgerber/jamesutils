@@ -228,7 +228,7 @@ if isstruct(Data)
     %    Data(Data==MissingValue)=NaN;
 else
     if assignedlatlong==0
-        [Long,Lat]=inferlonglat(Data);
+        [Long,Lat]=InferLongLat(Data);
     end
 end
 
@@ -395,7 +395,7 @@ textcolor=[0 0 0];
 
 % jg commenting on July 2018
 %if strcmp(categorical,'on')
-%    cmap=easyinterp2(cmap,3,length(categoryvalues));
+%    cmap=EasyInterp2(cmap,3,length(categoryvalues));
 %end
 
 a=fieldnames(NSS);
@@ -725,7 +725,7 @@ if Long(1) <= -179
     size(ii);
     size(Data);
    if ~isoctave
-       ii=easyinterp2(ii,size(Data,1),size(Data,2),'nearest');
+       ii=EasyInterp2(ii,size(Data,1),size(Data,2),'nearest');
    end
    Data(ii)=OceanVal;
 else
@@ -742,7 +742,7 @@ switch lower(sink)
         mm=AgriMaskLogical;
         mm=~mm;
         if ~isoctave
-            ii=easyinterp2(mm,size(Data,1),size(Data,2),'nearest');
+            ii=EasyInterp2(mm,size(Data,1),size(Data,2),'nearest');
         else
             ii=mm;
         end
@@ -1077,7 +1077,7 @@ if ~isempty(displaynotes)
     axes(mainaxes);
 end
 
-hideui
+HideUI
 
 
 

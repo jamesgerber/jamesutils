@@ -149,7 +149,7 @@ else
 end
     
     
-hideui;
+HideUI;
 ppm=get(gcf,'PaperPositionMode');
 set(gcf,'PaperPositionMode','auto');
 

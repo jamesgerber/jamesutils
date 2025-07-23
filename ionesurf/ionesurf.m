@@ -302,16 +302,16 @@ UserDataStructure.titlestring=TitleStr;
 % now make graphics
 clear NextButtonCoords
 
-worldsummary('Initialize');
-zoomtomax('Initialize');
-zoomtomin('Initialize');
-makereduceddatasets('Initialize');
-addcoastcallback('Initialize');
-zoomtocontinent('Initialize');
+WorldSummary('Initialize');
+ZoomToMax('Initialize');
+ZoomToMin('Initialize');
+MakeReducedDataSets('Initialize');
+AddCoastCallback('Initialize');
+ZoomToContinent('Initialize');
 PropagateLimits('Initialize');
-outputfig('Initialize');
-ionebuttondownfunctions('Initialize');
-propagatecaxis('Initialize');
+OutputFig('Initialize');
+IonEButtonDownFunctions('Initialize');
+PropagateCaxis('Initialize');
 
 
 %% Add Console

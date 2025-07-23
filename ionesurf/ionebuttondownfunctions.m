@@ -1,4 +1,4 @@
-function ionebuttondownfunctions(varargin);
+function IonEButtonDownFunctions(varargin);
 
 if nargin==0
     help(mfilename);
@@ -14,7 +14,7 @@ switch(InputFlag)
         position=NextButtonCoords;
         %%%[20 65 100 20]
         uicontrol('style','popupmenu','String',CallbackString,'Callback', ...
-            'ionebuttondownfunctions(''ChangeButtonBehaviorCallback'')',...
+            'IonEButtonDownFunctions(''ChangeButtonBehaviorCallback'')',...
             'position',position);
         return
     case 'ChangeButtonBehaviorCallback'
