@@ -1,0 +1,38 @@
+%function systemglobals
+% declare system globals
+
+global NUMERICALMODELSDIR
+global SOURCEDIR
+
+switch lower(getenv('computername'))
+    
+    
+case 'lt4vjfv51'  %jamie's laptop
+    NUMERICALMODELSDIR='c:/jgerber/numericalmodels/';
+    %NUMERICALMODELSDIR='c:/jgerber/servermirror/numericalmodels/';
+    SOURCEDIR='c:/jgerber/servermirror/matlab/';
+case 'hydro'
+    NUMERICALMODELSDIR='c:/jgerber/numericalmodels/';
+    SOURCEDIR='s:/source/matlab/';
+case 'macchiato'
+    NUMERICALMODELSDIR='o:/numericalmodels/';
+    SOURCEDIR='z:/servermirror/matlab/';
+    
+case {'lth3xwq61'}  %Diana's laptop
+    NUMERICALMODELSDIR='c:/numericalmodels/';
+    SOURCEDIR='s:/source/matlab/';
+    
+    case {'lt8t6h971'}
+        NUMERICALMODELSDIR='m:/numericalmodels/';
+    SOURCEDIR='s:/source/matlab/';
+   
+    
+case {                'wkf2sks11', ... %Drew's workstation
+            'lisa',...
+            'orca',...
+            'hydro1'}  
+    NUMERICALMODELSDIR='m:/numericalmodels/';
+    SOURCEDIR='s:/source/matlab/';
+    otherwise
+        
+end
