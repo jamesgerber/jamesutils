@@ -20,6 +20,12 @@ if nargin==0
     close all
     maketransparencymasks_nogridlinesnostates_Regional('r600','SEAsia','5min');
     maketransparencymasks_nogridlinesnostates_Regional('r600','SEAsia','30sec');
+    close all
+    maketransparencymasks_nogridlinesnostates_Regional('r600','carib','5min');
+    maketransparencymasks_nogridlinesnostates_Regional('r600','carib','30sec');
+    close all
+    maketransparencymasks_nogridlinesnostates_Regional('r300','carib','5min');
+    maketransparencymasks_nogridlinesnostates_Regional('r300','carib','30sec');
     maketransparencymasks_nogridlinesnostates_Regional('r1200','SEAsia','5min');
     maketransparencymasks_nogridlinesnostates_Regional('r1200','SEAsia','30sec');
     maketransparencymasks_nogridlinesnostates_Regional('r600','BRA','5min');

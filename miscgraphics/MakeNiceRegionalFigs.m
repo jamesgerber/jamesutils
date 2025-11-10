@@ -82,6 +82,37 @@ switch Region
         countrylist={'USA'};
         [LandMaskIndices]=internalstuff(Region,DataResolution,adminraster,countrylist);
 
+    case {'IND','India','india','INDIA'}
+        Region='India';
+        ThisXLim=[59 104];
+        ThisYLim=[-1 40];
+        NewPosition=[218   618   460   380];
+        countrylist={'IND'};
+        [LandMaskIndices]=internalstuff(Region,DataResolution,adminraster,countrylist);
+
+    case {'Caribbean','carib','CARIB'}
+        Region='carib';
+        ThisXLim=[-87 -59];
+        ThisYLim=[9 28];
+        NewPosition=[218   618   460   380];
+        countrylist = { ...
+    'ATG', ... % Antigua and Barbuda
+    'BHS', ... % Bahamas
+    'BRB', ... % Barbados
+    'CUB', ... % Cuba
+    'DMA', ... % Dominica
+    'DOM', ... % Dominican Republic
+    'GRD', ... % Grenada
+    'HTI', ... % Haiti
+    'JAM', ... % Jamaica
+    'KNA', ... % Saint Kitts and Nevis
+    'LCA', ... % Saint Lucia
+    'VCT', ... % Saint Vincent and the Grenadines
+    'TTO'  ... % Trinidad and Tobago
+};
+        
+        [LandMaskIndices]=internalstuff(Region,DataResolution,adminraster,countrylist);
+
 
 
     case {'RUS','Russia'}
@@ -462,7 +493,7 @@ else
     PrintResolution='-r300';
 end
 hideui
-print(['wtf' filename],'-dpng','-r300')
+print([filename],'-dpng','-r300')
 if usermappingpreference==0
     mappingon
 end

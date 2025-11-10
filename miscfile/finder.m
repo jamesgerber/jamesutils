@@ -3,7 +3,10 @@ function finder(filename)
 
 a=which(filename);
 
-b=fileparts(a);
-
+if isempty(a)
+    b=fileparts(filename);
+else
+    b=fileparts(a);
+end
 unix(['open ' b]);
 
