@@ -1,6 +1,7 @@
 function [ISO,CountryName]=M49toISO(M49);
 % M49toISO - turn an M49 Code into an ISO Code
-
+%
+% see also: ISOtoM49
 persistent a
 if isempty(a)
     a=readgenericcsv('countrynamesISOm49.txt',1,tab,1);

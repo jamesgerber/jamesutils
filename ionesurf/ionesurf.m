@@ -213,14 +213,16 @@ if ~isempty(ExtraCommands)
         b=double(RedData);
         
         [long,lat]=InferLongLat(b);
-        [lat2D,lon2D]=meshgrat(lat,long);
+%        [lat2D,lon2D]=meshgrat(lat,long);
+        [lat2D,lon2D]=ndgid(lat,long);
         
         
         lml=LandMaskLogical(b);
         b(~lml)=NaN;
         figure
       %  hm=gca;
-        [lat2D,lon2D]=meshgrat(RedLat,RedLong);
+%        [lat2D,lon2D]=meshgrat(RedLat,RedLong);
+        [lat2D,lon2D]=ndgrid(RedLat,RedLong);
       %  h=surfm(lat2D,lon2D,double(RedData.'));
  %       h=surface(RedLat,RedLong,double(b),double(b));
         h=surface(long,lat,double(b.'),double(b.'));
@@ -238,7 +240,8 @@ else
 %    set(hpatch,'FaceVertexCData',repmat([1 1 1],400,1))
     set(hpatch,'FaceVertexCData',ones(size(sz)));
     if meshmflag==0
-        [lat2D,lon2D]=meshgrat(RedLat,RedLong);
+        [lat2D,lon2D]=ndgrid(RedLat,RedLong);
+%        [lat2D,lon2D]=meshgrat(RedLat,RedLong);
         h=surfm(lat2D,lon2D,double(RedData.'));
     else
       NumPointsPerDegree=12*numel(RedLat)/2160;

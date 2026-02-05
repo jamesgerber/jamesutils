@@ -14,10 +14,11 @@ function maketransparencymasks_nogridlinesnostates(res)
 if nargin==0
    maketransparencymasks_nogridlinesnostates('r150');
    maketransparencymasks_nogridlinesnostates('r300');
-   maketransparencymasks_nogridlinesnostates('r400');
-   maketransparencymasks_nogridlinesnostates('r500');
+ %  maketransparencymasks_nogridlinesnostates('r400');
+ %  maketransparencymasks_nogridlinesnostates('r500');
    maketransparencymasks_nogridlinesnostates('r600');
    maketransparencymasks_nogridlinesnostates('r1200');
+   maketransparencymasks_nogridlinesnostates('r2400');
    return
 end
 ii=datablank;

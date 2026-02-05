@@ -13,6 +13,8 @@ function [Longout,Latout,FiveMinGridCellAreasout]=GetFiveMinGridCellAreas(indice
 %
 %   assumes a perfectly spherical earth of radius 6371km, which is mean
 %   radius of earth
+%
+%   see also:    getgridcellareasfromlonglat
 
 persistent FiveMinGridCellAreas Long Lat
 

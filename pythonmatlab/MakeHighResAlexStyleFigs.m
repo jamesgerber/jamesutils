@@ -1,4 +1,4 @@
-function [OutputData]=MakeAlexStyleFigs(raster,PS);
+function [OutputData]=MakeHighResAlexStyleFigs(raster,PS);
 % make figs in python
 %PS = ParameterStructure
 % %PS fields = 

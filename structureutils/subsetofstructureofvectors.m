@@ -15,6 +15,8 @@ function b=subsetofstructureofvectors(a,iikeep,stringfields)
 % of a into numbers
 %
 % b= subsetofstructureofvectors(a,[],[])
+%
+% see also: pullfromsov.m quickview.m
 
 if nargin<3
     tryStr2double=0;

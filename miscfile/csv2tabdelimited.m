@@ -25,6 +25,10 @@ function csv2tabdelimited(inputfilename,outputfilename,specialcaseflag)
 %
 %
 %  See Also:  readgenericcsv
+if nargin==0
+    help(mfilename)
+    return
+end
 
 if nargin<3
     specialcaseflag=0;

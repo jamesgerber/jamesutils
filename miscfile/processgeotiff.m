@@ -28,8 +28,20 @@ d=dir(filename);
 
 
 if isempty(d)
-    error('this file doesn''t seem to exist')
-    filename
+    [a,b,c]=fileparts(filename);
+
+    if isempty(a)
+        error(['no directory detected in full name, problem with ' filename])
+    elseif exist(a)==7
+        disp(['problem with ' filename])
+
+        disp('this file doesn''t seem to exist, but directory is valid')
+        a
+        error
+    else
+        error('not finding this directory')
+    end
+
     long=[];
     lat=[];
     raster=[];

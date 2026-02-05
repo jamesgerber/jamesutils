@@ -813,6 +813,17 @@ if isempty(figurehandle) | ~isgraphics(figurehandle)
     figurehandle=figure;
 end
 
+if numel(Long)==360;
+    Long=disaggregate_rate(Long,12);
+    Lat=disaggregate_rate(Lat,12);
+    Data=disaggregate_rate(Data,12);
+end
+if numel(Long)==720;
+    Long=disaggregate_rate(Long,6);
+    Lat=disaggregate_rate(Lat,6);
+    Data=disaggregate_rate(Data,6);
+end
+
 if Long(1) <= -179
     % probably using inferlonglat to get here.  Let ionesurf call again.
 

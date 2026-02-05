@@ -1,4 +1,4 @@
-function [OS]=getcropcharacteristics(cropname);
+!opefunction [OS]=getcropcharacteristics(cropname);
 % getcropcharacteristics - get crop characteristics from cropinfo.csv file
 %
 % SYNTAX
