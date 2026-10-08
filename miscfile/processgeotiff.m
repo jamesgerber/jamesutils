@@ -1,8 +1,12 @@
-function [long,lat,raster,R,info]=processgeotiff(filename);
+function [long,lat,raster,R,info]=processgeotiff(filename,extension);
 % processgeotiff - load geotiff, put into GLI standard format
 %  [long,lat,raster,R,info]=processgeotiff(filename);
 %
 %  [raster]=processgeotiff(filename);  (1 arg out)
+%  [raster]=processgeotiff(filename,extension) allows to specifying
+%  extenstion.  can be empty (if there's simply no extension)
+%
+%     
 
 % %example
 %
@@ -18,11 +22,18 @@ function [long,lat,raster,R,info]=processgeotiff(filename);
 
 
 % if there is no '.' in the filename, stick .tif on the end.
-if length(find(filename=='.'))==0
-    disp([' no extension on ' filename ', adding ".tif" '])
-    filename=fixextension(filename,'.tif');
+if nargin==2
+    if isempty(extension)
+        % do nothing
+    else
+        filename=[filename '.' extension];
+    end
+else
+    if length(find(filename=='.'))==0
+        disp([' no extension on ' filename ', adding ".tif" '])
+        filename=fixextension(filename,'.tif');
+    end
 end
-
 %Now making it an error - 
 d=dir(filename);
 
@@ -48,6 +59,19 @@ if isempty(d)
     R=[];
     info=[];
     return
+end
+
+%
+[~,t0]=unix(['du -h ' '"' filename '"'])
+[~,t1]=unix(['ls -lh ' '"' filename '"'])
+
+
+actualusage=t0(1:findstr(t0,tab)-1)
+nominalusage=t1(30:37)
+
+if ~isequal(strrep(actualusage,' ',''),strrep(nominalusage,' ',''))
+    disp([' these files arent the same size, prepare for world of pain']);
+  %  keyboard
 end
 
 [A,R]=geotiffread(filename);

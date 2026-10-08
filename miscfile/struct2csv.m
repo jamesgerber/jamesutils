@@ -105,3 +105,5 @@ catch
     end
             
 end
+
+fclose(fid)

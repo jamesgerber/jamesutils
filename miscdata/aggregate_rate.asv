@@ -44,10 +44,6 @@ function [small,modecount]=aggregate_rate(big,N,nanflag,smallclass,percentile)
 %    2 1 1       ->   "max"  ->  [2]
 %    2 1 1] 
 %
-% [  1 1 1 
-%    2 1 1       ->   "percentile"  (call matlab percentile function, 
-%    2 1 1]                          need to supply tau)
-%
 % See also:  aggregate_quantity
 
 

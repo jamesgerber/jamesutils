@@ -4,7 +4,18 @@
 ## import packages
 import os
 import sys
-import xarray as xr
+import geopandas as gpd
+import pandas as pd
+import matplotlib.pyplot as pltcbar_title
+import numpy as np
+## plotting libraries
+import matplotlib.pyplot as plt
+import matplotlib.patheffects as PathEffects
+from matplotlib.patches import Polygon
+import matplotlib.patches as mpatches
+import matplotlib.colors as mcolors
+from matplotlib.colors import Normalize, BoundaryNorm, ListedColormap, LinearSegmentedColormap, colorConverter
+
 
 # next two lines from ChatGPT with prompt about script pausing for windows.
 import matplotlib
@@ -18,11 +29,6 @@ import matplotlib.pyplot as plt
 # this makes plots not appear later. (I hope)
 plt.ioff()
 
-import matplotlib.patheffects as PathEffects
-from matplotlib.patches import Polygon
-import matplotlib.patches as mpatches
-import matplotlib.colors as mcolors
-from matplotlib.colors import Normalize, BoundaryNorm, ListedColormap, LinearSegmentedColormap, colorConverter
 
 import configparser
 
@@ -97,7 +103,8 @@ land_ocean_tif = os.getenv('GADM_RASTER_NOISLANDS_5min_PATH') # 5 min tif (gadml
 ## put into mapconfig.ini
 
 # variables that have to be configed
-#input_tif_filename
+# XXXXXXS input_tif_filename. XXXXXXXX (that was from raster)
+# input_csv_filename
 # #MAPS_DIR
 #map_filename
 #cmap_string (a list of strings, can be a matplotlib string or a list of colors in HEX ) see below,
@@ -128,17 +135,19 @@ config = configparser.ConfigParser(
 
 config.read('/Users/jsgerber/temp/pythontempfiles/mapconfig.ini')
 MAPS_DIR=config.get('MapConstants','MAPS_DIR')
-input_tif_filename=config.get('MapConstants','input_tif_filename')
+input_csv_filename=config.get('MapConstants','input_csv_filename')
 map_filename=config.get('MapConstants','map_filename')
 cmap_string=config.get('MapConstants','cmap_string')
 cbar_title=config.get('MapConstants','cbar_title')
 #cbar_units=config.get('MapConstants','cbar_units')
 extend_cbar=config.get('MapConstants','extend_cbar')
 data_min=config.getfloat('MapConstants','data_min')
+data_center=config.getfloat('MapConstants','data_center')
 data_max=config.getfloat('MapConstants','data_max')
+plotdatacolumn=config.get('MapConstants','plotdatacolumn')
 ### end code from prev version
 
-
+gdf_plotcolumn=plotdatacolumn
 # # section to turn cmap_string into cmap
 # cmap_string can be something like 'Greens' or 
 # cmap_string = ['#F2FAEB', '#DCF0C7', '#C5E6A2', '#AFDD7E', '#98D35A', '#82C936', '#6BA52C', '#538122', '#385617']
@@ -179,19 +188,12 @@ print(matplotlib.get_backend())
 
 ## open raster, reproject to robinson, and clip to admin boundaries
 print('inputtiffilename')
-print(input_tif_filename)
-map_da = mapping_utils.prep_global_raster_mapping(tif_path=input_tif_filename, rtype='categorical')
+print(input_csv_filename)
+#map_da = mapping_utils.prep_global_raster_mapping(tif_path=input_tif_filename, rtype='categorical')
 
-## usually plot the data_min to the 99th percentile value of data
-#data_min, data_max, data_percile = raster_utils.get_summary_stats(map_da, 99)
-print('map_da stuff')
-print(map_da.rio.crs)
-print(map_da.rio.transform())
-print(map_da.dtype)
-print(np.isnan(map_da.values).sum())
-print(np.nanmin(map_da.values), np.nanmax(map_da.values))
+vector_df = pd.read_csv(input_csv_filename)
+vector_gdf = gadm_robinson.merge(vector_df, left_on='GID_0', right_on='ISO')
 
-map_da.rio.to_raster("/Users/jsgerber/temp/debug_copyAlex.tif")
 
 
 #data_min, data_max, data_percile = raster_utils.get_summary_stats(map_da, 99)
@@ -200,42 +202,50 @@ map_da.rio.to_raster("/Users/jsgerber/temp/debug_copyAlex.tif")
 
 ## takes around 15 sec to run
 print(data_max)
-## map only
-mapping_utils.plot_global_raster_maponly(
-    fig_width=figsize_w,
-    fig_height=figsize_h,
-    data_array=map_da,
-    arr_cmap=cmap,
-    data_min=data_min,
-    data_max=data_max,
-    admin_boundaries=gadm_robinson,
-    map_output_dir=MAPS_DIR,
-    map_filename=map_filename   
-)
-## map only
-mapping_utils.plot_global_raster_maponly_light(
-    fig_width=figsize_w,
-    fig_height=figsize_h,
-    data_array=map_da,
-    arr_cmap=cmap,
-    data_min=data_min,
-    data_max=data_max,
-    admin_boundaries=gadm_robinson,
-    map_output_dir=MAPS_DIR,
-    map_filename=map_filename   
-)
 
-## just pixel version
-mapping_utils.plot_global_continous_rasters_justpixels(
+mapping_utils.plot_global_divergent_vector_maponly(
     fig_width=figsize_w, 
     fig_height=figsize_h, 
-    data_array=map_da, 
-    arr_cmap=cmap, 
+    gdf=vector_gdf, 
+    gdf_col=gdf_plotcolumn,
+    admin_boundaries=gadm_robinson, 
+    cmap=cmap, 
     data_min=data_min,
     data_max=data_max,
+    data_center=0, ## center of data so the middle colors will map here
     map_output_dir=MAPS_DIR, 
-    map_filename=map_filename_justpixels
+    map_filename=map_filename, 
+    boundaries_lw=0.3, 
+    boundaries_ec='#757575', 
+    save_svg=False ## switch to True if a SVG version is desired
 )
+
+
+
+# ## map only
+# mapping_utils.plot_global_raster_maponly_light(
+#     fig_width=figsize_w,
+#     fig_height=figsize_h,
+#     data_array=map_da,
+#     arr_cmap=cmap,
+#     data_min=data_min,
+#     data_max=data_max,
+#     admin_boundaries=gadm_robinson,
+#     map_output_dir=MAPS_DIR,
+#     map_filename=map_filename   
+# )
+
+# ## just pixel version
+# mapping_utils.plot_global_continous_rasters_justpixels(
+#     fig_width=figsize_w, 
+#     fig_height=figsize_h, 
+#     data_array=map_da, 
+#     arr_cmap=cmap, 
+#     data_min=data_min,
+#     data_max=data_max,
+#     map_output_dir=MAPS_DIR, 
+#     map_filename=map_filename_justpixels
+# )
 
 
 

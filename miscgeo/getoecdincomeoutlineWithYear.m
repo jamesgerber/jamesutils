@@ -53,7 +53,7 @@ ii5=strmatch('L',incomecode,'exact');
 
 
 switch lower(char(incomelevel))
-    case {'high'}
+    case {'high','hi'}
         ii=unique([ii1']);
     case {'middle','mid','med'}
         ii=unique([ii3' ii4']);

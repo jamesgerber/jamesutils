@@ -1,4 +1,8 @@
 function [OutputData]=MakeAlexStyleFigs(raster,PS);
+
+warndlg('MakeAlexStyleFigs - should not be called')
+[OutputData]=MakeAlexStyleFigsNew(raster,PS);
+return
 % make figs in python
 %PS = ParameterStructure
 % %PS fields = 

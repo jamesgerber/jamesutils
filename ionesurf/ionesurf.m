@@ -47,9 +47,9 @@ if isempty(TitleStr)
         TitleStr=InputVariableName;
 end
 
-if nargin==6
-    clf(hfig,'reset');
-end
+% if nargin==6
+%    clf(hfig,'reset');
+% end
 
 
 CanMap=CheckForMappingToolbox;
@@ -122,7 +122,8 @@ if ~exist('hfig');
 elseif isempty(hfig)
     hfig=figure;
 else
-    figure(hfig);
+%    set(hfig,'Visible','off')
+%    figure(hfig);
 end
 
 zoom(hfig,'on');
@@ -237,31 +238,26 @@ else
 
     hpatch=findobj(allchild(hm),'type','patch');
     sz=get(hpatch,'Vertices');
-%    set(hpatch,'FaceVertexCData',repmat([1 1 1],400,1))
     set(hpatch,'FaceVertexCData',ones(size(sz)));
     if meshmflag==0
         [lat2D,lon2D]=ndgrid(RedLat,RedLong);
-%        [lat2D,lon2D]=meshgrat(RedLat,RedLong);
         h=surfm(lat2D,lon2D,double(RedData.'));
     else
-      NumPointsPerDegree=12*numel(RedLat)/2160;
-   %     NumPointsPerDegree=1/(RedLat(2)-RedLat(1));
+        % this stopped working in 2024b:
+        % NumPointsPerDegree=1/(RedLat(2)-RedLat(1));
         % R=[NumPointsPerDegree,90,-180];
         % h=meshm(double(RedData.'),R,[50 180],-1);
 
-%% attempt to fix this for 2024b using code from chatGPT
-        % R=[NumPointsPerDegree,90,-180];
-        % h=meshm(double(RedData.'),R,[50 180],-1);
+        %Next 4 lines of code a fix from chatGPT
+        % Define latitude and longitude limits (adjust based on your data)
+        latlim = [min(RedLat) max(RedLat)];
+        lonlim = [min(RedLong) max(RedLong)];
 
-% Define latitude and longitude limits (adjust based on your data)
-latlim = [min(RedLat) max(RedLat)];
-lonlim = [min(RedLong) max(RedLong)];
+        % Create a geographic raster reference object
+        R_geo = georefcells(latlim, lonlim, size(RedData.'));
 
-% Create a geographic raster reference object
-R_geo = georefcells(latlim, lonlim, size(RedData.'));
-
-% Use the new reference object in meshm
-h = meshm(double(RedData.'), R_geo, [50 180], -1);
+        % Use the new reference object in meshm
+        h = meshm(double(RedData.'), R_geo, [50 180], -1);
 
 
 

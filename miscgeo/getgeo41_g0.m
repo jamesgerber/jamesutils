@@ -24,7 +24,9 @@ else
 
 end
 
-
+if nargout==0
+    help(mfilename)
+end
 
 if nargin==1
     if isnumeric(ISO)

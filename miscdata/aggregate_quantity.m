@@ -82,7 +82,7 @@ switch lower(nanflag)
         small=zeros(size(big)/N,smallclass);
         for m=1:N
             for k=1:N
-                small(:,:)=small(:,:)+big(m:N:end,k:N:end);
+                 small(:,:)=small(:,:)+big(m:N:end,k:N:end);
             end
         end
     case {'hidden','average'}

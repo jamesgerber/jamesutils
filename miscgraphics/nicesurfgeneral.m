@@ -824,32 +824,33 @@ if numel(Long)==720;
     Data=disaggregate_rate(Data,6);
 end
 
-if Long(1) <= -179
-    % probably using inferlonglat to get here.  Let ionesurf call again.
+if plotflag=='on'
+    if Long(1) <= -179
+        % probably using inferlonglat to get here.  Let ionesurf call again.
 
-    %    warning(' Sep, 2018 ... jamie fixing nsg ... not sure why but it was ignoring a passed in long/lat')
+        %    warning(' Sep, 2018 ... jamie fixing nsg ... not sure why but it was ignoring a passed in long/lat')
 
-    % ionesurf(Data); old code
-    ionesurf(Long,Lat,Data,'','',figurehandle);
+        % ionesurf(Data); old code
+        ionesurf(Long,Lat,Data,'','',figurehandle);
 
-else
-    ionesurf(Long,Lat,Data,'','',figurehandle);
+    else
+        ionesurf(Long,Lat,Data,'','',figurehandle);
+    end
+    %% Change projection
+
+    if  ~isequal(projection,'')
+        setm(gca,'mapproj',projection)
+    end
+
+    OS.axishandle=gca;
+
+
+
+    %% Make graph
+
+    finemap(cmap,lowermap,uppermap); % see above
+    caxis([(cmin-minstep)  (cmax+minstep)]); %don't change unless see above
 end
-
-%% Change projection
-
-if  ~isequal(projection,'')
-    setm(gca,'mapproj',projection)
-end
-
-OS.axishandle=gca;
-
-
-
-%% Make graph
-
-finemap(cmap,lowermap,uppermap); % see above
-caxis([(cmin-minstep)  (cmax+minstep)]); %don't change unless see above
 
 
 

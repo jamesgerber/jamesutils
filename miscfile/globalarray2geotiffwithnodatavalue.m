@@ -58,13 +58,13 @@ rasterforwriting(isnan(rasterforwriting))=nodatainteger;
 
 
 TiffTags.Compression='LZW';
-geotiffwrite('tmp.tif',rasterforwriting,R,'TiffTags',TiffTags);
+geotiffwrite('~/.globalarraytmp.tif',rasterforwriting,R,'TiffTags',TiffTags);
 
 
 % chatGPT helped me with the following line
 %gdal_calc.py --overwrite --co="COMPRESS=LZW" -A tmp.tif --outfile=tmp_nan.tif --calc="numpy.where(A==-99, numpy.nan, A)" --NoDataValue=nan
 
-evalme=['/opt/homebrew/bin/gdal_calc.py --overwrite --co="COMPRESS=LZW" -A tmp.tif --outfile=' filename ' --calc="numpy.where(A==' int2str(nodatainteger) ', numpy.nan, A)" --NoDataValue=nan'];
+evalme=['/opt/homebrew/bin/gdal_calc.py --overwrite --co="COMPRESS=LZW" -A ~/.globalarraytmp.tif --outfile=' filename ' --calc="numpy.where(A==' int2str(nodatainteger) ', numpy.nan, A)" --NoDataValue=nan'];
 
 %disp(evalme)
 disp(['calling gdal_translate to standardize handling of nans'])

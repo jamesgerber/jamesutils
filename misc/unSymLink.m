@@ -1,0 +1,21 @@
+function outdir=unSymLink(indir);
+% unSymLink - return hard link name from a symbolic link
+%
+% I wrote this once when I was on an airplane and all of the symbolic links
+% were broken.  I probably should have deleted and reinstalled the links
+% but this seemed like a step towards a more robust solution eventually.
+
+if strmatch('~/nexus/NexusDataDrive',indir)
+   outdir=strrep(indir,'~/nexus/NexusDataDrive',...
+       '/Users/jsgerber/Library/CloudStorage/GoogleDrive-james.gerber@drawdown.org/Shared drives/Nexus Data Drive/');
+end
+
+if strmatch('~/DrawdownSolutions',indir)
+   outdir=strrep(indir,'~/DrawdownSolutions',...
+    '/Users/jsgerber/Library/CloudStorage/GoogleDrive-james.gerber@drawdown.org/Shared drives/Geospatial Drive/Solutions-Explorer/MatlabSolutionSandbox/');
+end
+
+if strmatch('~/DataProducts',indir)
+   outdir=strrep(indir,'~/DataProducts',...
+    '/Users/jsgerber/Library/CloudStorage/GoogleDrive-james.gerber@drawdown.org/Shared drives/Geospatial Drive/DataProducts');
+end

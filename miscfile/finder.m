@@ -8,5 +8,5 @@ if isempty(a)
 else
     b=fileparts(a);
 end
-unix(['open ' b]);
+unix(['open "' b '"']);
 
