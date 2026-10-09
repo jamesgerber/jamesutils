@@ -6,7 +6,7 @@ function [long,lat,raster,R,info]=processgeotiff(filename,extension);
 %  [raster]=processgeotiff(filename,extension) allows to specifying
 %  extenstion.  can be empty (if there's simply no extension)
 %
-%     
+%
 
 % %example
 %
@@ -34,7 +34,7 @@ else
         filename=fixextension(filename,'.tif');
     end
 end
-%Now making it an error - 
+%Now making it an error -
 d=dir(filename);
 
 
@@ -42,23 +42,25 @@ if isempty(d)
     [a,b,c]=fileparts(filename);
 
     if isempty(a)
-        error(['no directory detected in full name, problem with ' filename])
-    elseif exist(a)==7
-        disp(['problem with ' filename])
-
-        disp('this file doesn''t seem to exist, but directory is valid')
-        a
-        error
+        disp(['no directory detected in full name, possible problem with ' filename])
     else
-        error('not finding this directory')
-    end
+        if exist(a)==7
+            disp(['problem with ' filename])
 
-    long=[];
-    lat=[];
-    raster=[];
-    R=[];
-    info=[];
-    return
+            disp('this file doesn''t seem to exist, but directory is valid')
+            a
+            error
+        else
+            error('not finding this directory')
+        end
+
+        long=[];
+        lat=[];
+        raster=[];
+        R=[];
+        info=[];
+        return
+    end
 end
 
 %
@@ -71,26 +73,26 @@ nominalusage=t1(30:37)
 
 if ~isequal(strrep(actualusage,' ',''),strrep(nominalusage,' ',''))
     disp([' these files arent the same size, prepare for world of pain']);
-  %  keyboard
+    %  keyboard
 end
 
 [A,R]=geotiffread(filename);
 
 %if isfield(R,'LongitudeLimits');
 try
-    
+
     LonLims=R.LongitudeLimits;
     LatLims=R.LatitudeLimits;
     DeltaLon=R.CellExtentInLongitude;
     DeltaLat=R.CellExtentInLatitude;
-    
+
 catch
     LonLims=R.XWorldLimits;
     LatLims=R.YWorldLimits;
     DeltaLon=R.CellExtentInWorldX;
     DeltaLat=R.CellExtentInWorldY;
-    
-    
+
+
 end
 %diff(LonLims)/size(A,2)
 
