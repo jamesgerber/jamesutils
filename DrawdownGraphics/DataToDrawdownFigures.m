@@ -122,7 +122,7 @@ if numel(raster)<=prod(2160*4320*4)
     OSwb=OS;
     [status,cmdout] = unix(['cp temp.png ' outputfolder '/figs_whitebackground' filesep filenameroot '_WhiteBackground.png'])
 
-    if status==0
+    if status==0 && ~strcmp(getenv("PLOT_MODE"), "python") 
         filename=[outputfolder '/figs_blackbackground' filesep filenameroot '_BlackBackground.png'];
         maketransparentoceans_noant_nogridlinesnostates_removeislands('temp.png',filename,[1 1 1],1);
     end
@@ -141,7 +141,7 @@ if numel(raster)<=prod(2160*4320*4)
 
     OS=nsg(raster,NSS);
     [status,cmdout] = unix(['cp temp.png ' outputfolder '/figs_whitebackground_notitle' filesep filenameroot '_WhiteBackground_NoTitle.png'])
-  if status==0
+  if status==0 && ~strcmp(getenv("PLOT_MODE"), "python") 
       filename=[outputfolder '/figs_blackbackground_notitle' filesep filenameroot '_BlackBackground_NoTitle.png'];
       maketransparentoceans_noant_nogridlinesnostates_removeislands('temp.png',filename,[1 1 1],1);
   end
@@ -158,7 +158,7 @@ if numel(raster)<=prod(2160*4320*4)
     NSSnotitlenounits=NSS;
     OS=nsg(raster,NSS);
     [status,cmdout] = unix(['cp temp.png ' outputfolder '/figs_whitebackground_notitlenounits' filesep filenameroot '_WhiteBackground_NoTitleNoUnits.png'])
-    if status==0
+    if status==0 && ~strcmp(getenv("PLOT_MODE"), "python") 
         filename=[outputfolder '/figs_blackbackground_notitlenounits' filesep filenameroot '_BlackBackground_NoTitleNoUnits.png'];
         maketransparentoceans_noant_nogridlinesnostates_removeislands('temp.png',filename,[1 1 1],1);
     end
@@ -205,14 +205,15 @@ end
 
 % what is full directory?
 % this code makes sure there's a full directory listing for this next part.
-switch outputfolder(1:2)
-    case '~/'
-        fullMAPS_DIRstart=['/Users/' getenv('username') outputfolder(2:end)];
-    case '/U'
-        fullMAPS_DIRstart=[outputfolder];
-    otherwise
-        fullMAPS_DIRstart=[pwd filesep outputfolder];
-end
+% switch outputfolder(1:2)
+%     case '~/'
+%         fullMAPS_DIRstart=['/Users/' getenv('username') outputfolder(2:end)];
+%     case '/U'
+%         fullMAPS_DIRstart=[outputfolder];
+%     otherwise
+%         fullMAPS_DIRstart=[pwd filesep outputfolder];
+% end
+fullMAPS_DIRstart = getenv("MAPS_DIR");
 
 clear PS
 PS.MAPS_DIR=[fullMAPS_DIRstart '/FigsStyledFor2026/'];
