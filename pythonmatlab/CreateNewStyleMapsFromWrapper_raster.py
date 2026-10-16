@@ -57,11 +57,6 @@ print("rioxarray:", rioxarray.__version__)
 print("pyproj:", pyproj.__version__)
 
 import matplotlib
-print(matplotlib.get_backend())
-#matplotlib.use("macosx")
-print(matplotlib.get_backend())
-import matplotlib
-print(matplotlib.get_backend())
 # import utils
 import utils.presentation_maps_utils as mapping_utils
 import utils.raster_utils as raster_utils
