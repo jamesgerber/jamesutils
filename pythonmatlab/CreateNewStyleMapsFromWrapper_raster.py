@@ -8,7 +8,7 @@ import xarray as xr
 
 # next two lines from ChatGPT with prompt about script pausing for windows.
 import matplotlib
-matplotlib.use('macosx')
+#matplotlib.use('macosx') # Why do you make life difficult for me? 
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -31,11 +31,11 @@ from dotenv import load_dotenv
 load_dotenv('../../.env.local', verbose=True)
 
 ## set working directory to root project folder to import utils
-ROOT_DIR = os.path.abspath('/Users/jsgerber/source/pd-create-maps/')
+ROOT_DIR = os.getenv('PYTHON_CREATE_MAPS_DIR')#os.path.abspath('/Users/jsgerber/source/pd-create-maps/')
 # print(ROOT_DIR)
 sys.path.insert(0, ROOT_DIR)
 
-sys.path.append('/Users/jsgerber/source/pd-create-maps/utils/')
+sys.path.append(f'{ROOT_DIR}/utils/')
 
 print(sys.path)
 
@@ -58,7 +58,7 @@ print("pyproj:", pyproj.__version__)
 
 import matplotlib
 print(matplotlib.get_backend())
-matplotlib.use("macosx")
+#matplotlib.use("macosx")
 print(matplotlib.get_backend())
 import matplotlib
 print(matplotlib.get_backend())
@@ -126,7 +126,7 @@ config = configparser.ConfigParser(
     inline_comment_prefixes=(';')
 )
 
-config.read('/Users/jsgerber/temp/pythontempfiles/mapconfig.ini')
+config.read(f'{os.getenv('TEMP_DIR')}/pythontempfiles/mapconfig.ini')#('/Users/jsgerber/temp/pythontempfiles/mapconfig.ini')
 MAPS_DIR=config.get('MapConstants','MAPS_DIR')
 input_tif_filename=config.get('MapConstants','input_tif_filename')
 map_filename=config.get('MapConstants','map_filename')
@@ -191,7 +191,7 @@ print(map_da.dtype)
 print(np.isnan(map_da.values).sum())
 print(np.nanmin(map_da.values), np.nanmax(map_da.values))
 
-map_da.rio.to_raster("/Users/jsgerber/temp/debug_copyAlex.tif")
+map_da.rio.to_raster(f'{os.getenv("TEMP_DIR")}/debug_copyAlex.tif')#("/Users/jsgerber/temp/debug_copyAlex.tif")
 
 
 #data_min, data_max, data_percile = raster_utils.get_summary_stats(map_da, 99)
