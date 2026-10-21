@@ -85,7 +85,7 @@ end
 % no '~' in MAPS_DIR
 % no numbers, need only strings
 
-if length(findstr('~',PS.MAPS_DIR))>0
+if ~isempty(findstr('~',PS.MAPS_DIR))
     warning('replacing ~ with full path name (python does not like ~)');
 
     % two possible cases:  '~username' or '~' resolves to /Users/username
@@ -94,7 +94,7 @@ if length(findstr('~',PS.MAPS_DIR))>0
     % catch first case
     str=strrep(str,['~' username],['/Users/' username]);
     % catch second case
-    str=strrep(str,['~/' ],['/Users/' username '/']);
+    str=strrep(str,'~/' ,['/Users/' username '/']);
     PS.MAPS_DIR=str;
 end
 
@@ -286,8 +286,8 @@ jj=(-604:0)+3947;
 anew=atransp;
 alphtranspnew=alphatransp;
 
-anew(jj,ii,:)=aleglight(81:end,:,:);
-alphtranspnew(jj,ii)=alphaleglight(81:end,:,:);
+anew(jj,ii,:)=aleglight(81:81+604,:,:);
+alphtranspnew(jj,ii)=alphaleglight(81:81+604,:,:);
 
 imwrite(anew,[PS.MAPS_DIR filesep PS.map_filename '_map_legend_NOT_FOR_KEYNOTE.png'],'Alpha',alphtranspnew);
 
