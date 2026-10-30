@@ -123,7 +123,7 @@ end
 
 wd=pwd;
 
-workingdir='/Users/jsgerber/temp/pythontempfiles/';
+workingdir=[getenv("TEMP_DIR") 'pythontempfiles/'];
 try
     cd(workingdir)
 catch
@@ -244,12 +244,12 @@ end
 
 fclose(fid)
 
-cd ~/source/pd-create-maps/
+cd(getenv("PYTHON_CREATE_MAPS_DIR"))
 
 if VectorFlag==1
-    !/Users/jsgerber/.conda/envs/plotting2/bin/python  ~/source/jamesutils/pythonmatlab/CreateNewStyleMapsFromWrapper_vector.py
+    system([getenv("PYTHON_PATH")  ' ' getenv("JAMES_UTILS_PATH") '/pythonmatlab/CreateNewStyleMapsFromWrapper_vector.py'])
 else
-    !/Users/jsgerber/.conda/envs/plotting2/bin/python  ~/source/jamesutils/pythonmatlab/CreateNewStyleMapsFromWrapper_raster.py
+    system([getenv("PYTHON_PATH")  ' ' getenv("JAMES_UTILS_PATH") '/pythonmatlab/CreateNewStyleMapsFromWrapper_raster.py'])
 end
 
 cd(wd)

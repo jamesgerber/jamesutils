@@ -9,10 +9,8 @@
 if exist("localMatlabPath.m", 'file')
    IoneDataDir = localMatlabPath;
 else
-   IoneDataDir='~/ionedata/';
-   warning('localMatlabPath not found in path, IoneDataDir set to ~/ionedata/')
+   IoneDataDir=getenv('IONE_DATA_DIR');
 end
-
 MISSINGDATAVALUE=-9E9;
 
 ADMINBOUNDARYMAP_5min    =[IoneDataDir 'AdminBoundary2010/Raster_NetCDF/2_States_5min/glctry.nc'];
