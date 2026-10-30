@@ -1,10 +1,14 @@
-function sov2csv(a,filename,delimiter,startfields,excludefields)
+function sov2csv(a,filename,delimiter,startfields,excludefields,extralines,timestampflag)
 %sov2csv - write a structure of vectors to a .csv file
 %
 
 % syntax:
-%       sov2csv(a,filename,delimiter,startfields)
+%    sov2csv(a,filename,delimiter,startfields)
 %
+%    sov2csv(a,filename,delimiter,startfields,excludefields,extralines,timestampflag)
+%
+% timestampflag=1 will add a line about when file written, where, what code
+% etc.
 %  will also handle a vos (vector of structures)
 %
 %
@@ -14,17 +18,27 @@ if nargin<2
     return
 end
 
-if nargin<3
+if nargin<3 | isempty(delimiter)
     delimiter=',';
 end
-if nargin<4
+if nargin<4  | isempty(startfields)
     startfields=fieldnames(a);
 end
-
-if nargin<5
+if nargin<5 | isempty(excludefields)
     excludefields={};
 end
 
+if nargin<6 | isempty(extralines)
+    extralines={};
+end
+
+if nargin<7 | isempty(timestampflag)
+    timestampflag=0;
+end
+
+if ischar(extralines)
+    extralines={extralines}; % want this to be a cell so don't have to think about it later
+end
 
 if numel(a) >1
     disp(['This appears to be a vector of structures (vos) not an sov.  attempting to convert.'])
@@ -86,20 +100,20 @@ end
 %  because i write one less comma then there are fields ... but handled
 %  differently when rewriting below ..
 % fid=fopen(filename,'w');
-% 
+%
 % for m=1:(numel(listOfIdxInclude)-1)
-% 
+%
 %     fprintf(fid,'%s,',allfieldnames{listOfIdxInclude(m)})
-% 
+%
 %     tempfield=getfield(a,allfieldnames{listOfIdxInclude(m)});
-% 
+%
 %     isanumericalfield(m)= isnumeric(tempfield(1));
-% 
+%
 % end
 % fprintf(fid,'%s\n',allfieldnames{listOfIdxInclude(end)});
 % tempfield=getfield(a,allfieldnames{listOfIdxInclude(m)});
 % isanumericalfield(end+1)= isnumeric(tempfield(end)); % this used to be tempfield(1) ... seems like a bug.
-% 
+%
 
 fid=fopen(filename,'w');
 
@@ -115,9 +129,23 @@ for m=1:(numel(listOfIdxInclude))
         fprintf(fid,D);
     else
         fprintf(fid,'\n');
-
     end
+end
 
+if timestampflag>0
+
+    stack=dbstack;
+    if numel(stack)>=2
+        name=stack(2).name;
+    else
+        name='no caller';
+    end
+    string=['written ' datestr(now) ' calling ft = ' name ' wd= ' pwd ];
+    fprintf(fid,'%s\n',string);
+end
+
+for j=1:numel(extralines)
+    fprintf(fid,'%s\n',extralines{j});
 end
 
 
@@ -146,7 +174,7 @@ end
 
 
 
-end
+
 
 
 
