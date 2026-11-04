@@ -1,2 +1,5 @@
 settings.json
 .env
+
+__pycache__
+*.bak
