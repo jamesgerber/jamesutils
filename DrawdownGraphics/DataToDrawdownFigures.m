@@ -203,17 +203,7 @@ else
     end
 end
 
-% what is full directory?
-% this code makes sure there's a full directory listing for this next part.
-% switch outputfolder(1:2)
-%     case '~/'
-%         fullMAPS_DIRstart=['/Users/' getenv('username') outputfolder(2:end)];
-%     case '/U'
-%         fullMAPS_DIRstart=[outputfolder];
-%     otherwise
-%         fullMAPS_DIRstart=[pwd filesep outputfolder];
-% end
-fullMAPS_DIRstart = getenv("MAPS_DIR");
+fullMAPS_DIRstart=[outputfolder];
 
 clear PS
 PS.MAPS_DIR=[fullMAPS_DIRstart '/FigsStyledFor2026/'];
@@ -254,7 +244,7 @@ if islogical(raster)
 end
 
 
-MakeAlexStyleFigsNew(raster,PS);
+MakeAlexStyleFigs(raster,PS);
 
 % End of python wrapper section
 
