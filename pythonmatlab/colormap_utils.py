@@ -33,6 +33,9 @@ cmap_rev = string(cell(pyrun("from colormap_utils import fetch_cmap; cmap_hex, _
 % Get color axis limits for a dataset: pass the data and how to bound each side
 bounds = pyrun("from colormap_utils import create_color_axis_range; bound_list = create_color_axis_range(data, '5%', '95%')", "bound_list", data = randn(1000, 1));
 lims = double(bounds)   % 1x2: [lower_percentile, upper_percentile]
+
+To add new matlab colormaps theres a provided command line utility simply run:
+python path/to/colormap_utils.py add_m_cmap path/to/somesortofcolorbar.m
 """
 
 import json
@@ -133,26 +136,108 @@ def parse_colormap_m(path: str) -> list[rgb_color]:
     else:
         body = m.group(1)
 
+    # Strip a MATLAB trailing division like ]/255; so the 255 isn't parsed as a color value
+    body = re.sub(r"\]\s*/\s*255\s*;?\s*$", "", body.strip())
+
     floats = [float(x) for x in re.findall(r"[-+]?\d*\.\d+|[-+]?\d+", body)]
     if len(floats) % 3:
         raise ValueError(f"{path}: {len(floats)} values, not divisible by 3")
+
+    # Files can have colors on the [0, 1] float scale or the [0, 255] int scale, detect which
+    if max(floats) <= 1.0:
+        return [
+            tuple(int(round(255 * v)) for v in floats[k:k + 3])
+            for k in range(0, len(floats), 3)
+        ]
     return [
-        tuple(int(round(255 * v)) for v in floats[k:k + 3])
+        tuple(int(round(v)) for v in floats[k:k + 3])
         for k in range(0, len(floats), 3)
     ]
+
+
+def _write_cmaps_json(cmap_dict: dict, out_path: str) -> None:
+    """
+    Write a dict of colormaps to `out_path/cmaps.json` in the canonical format:
+    one line per colormap, keys sorted lexicographically.
+
+    Args:
+        cmap_dict: Dict mapping colormap names to lists of [r, g, b] int rows
+        out_path: Path to the directory where to put the cmaps.json file
+    """
+    with open(Path(out_path).joinpath("cmaps.json"), "w") as f:
+        f.write("{\n")
+        items = list(cmap_dict.items())
+        items.sort(key=lambda x: x[0])
+        for i, (name, cmap) in enumerate(items):
+            rows = ", ".join(json.dumps(row, separators=(", ", ": ")) for row in cmap)
+            comma = "," if i < len(items) - 1 else ""
+            f.write(f'  "{name}": [{rows}]{comma}\n')
+        f.write("}\n")
+
+
+def clean_cmaps_json(path: str = "") -> None:
+    """
+    Clean up cmaps.json: re-sorts the keys the same way as the original ingestion
+    and rewrites the file in the canonical one-line-per-cmap format.
+
+    Args:
+        path: Path to the cmaps.json file to clean up, defaults to the one next to this module
+    Returns:
+        None, but the file at `path` is overwritten with the cleaned version.
+    """
+    path = path or Path(__file__).parent.joinpath("cmaps.json")
+    with open(path, "r") as f:
+        cmap_dict = json.load(f)
+    _write_cmaps_json(cmap_dict, str(Path(path).parent))
+    print(f"Cleaned {len(cmap_dict)} colormaps in {path}")
+
+
+def add_m_cmap(path: str, name: str = "", out_path: str = "") -> list[rgb_color]:
+    """
+    Append a single colormap from a MATLAB .m file into cmaps.json.
+
+    Parses the .m file, adds it under the given name (or the filename without
+    extension if no name is given), then rewrites cmaps.json sorted and formatted
+    the same way as the original ingestion.
+
+    Args:
+        path: Path to the MATLAB .m colormap file for example jfblue.m
+        name: Optional name to store the colormap under. If not given, uses the file
+            name up to (but not including) the first period.
+        out_path: Path to the directory containing cmaps.json, defaults to the directory
+            this module lives in.
+    Returns:
+        The parsed list of rgb tuples in 0-255 scale that was added.
+    """
+    formatted_cmap = parse_colormap_m(path)
+    if not formatted_cmap:
+        raise ValueError(f"Could not parse a colormap from {path}")
+
+    if not name:
+        name = Path(path).name.split(".")[0]
+
+    json_dir = out_path or Path(__file__).parent
+    json_path = Path(json_dir).joinpath("cmaps.json")
+    with open(json_path, "r") as f:
+        cmap_dict = json.load(f)
+    cmap_dict[name] = formatted_cmap
+    _write_cmaps_json(cmap_dict, str(json_dir))
+    print(f"Added '{name}' ({len(formatted_cmap)} colors) to {json_path}")
+    return formatted_cmap
 
 
 def process_cmap_dir(dir_path: str, out_path: str = "") -> None:
     """
     Process the ione colormaps directory into one json file which is put into `out_path/cmaps.json`
 
-    Essentially it takes each tiff and each .m colormap, converts them to an rgb [0,255] scale array 
-    and writes a large dict that has keys equal to the names with the values being those arrays. 
+    Essentially it takes each tiff and each .m colormap, converts them to an rgb [0,255] scale array
+    and writes a large dict that has keys equal to the names with the values being those arrays.
 
-    
+
     NOTE:
-    * This should not need to be ran as the cmaps.json is in this directory in a slightly cleaned up form. 
+    * This should not need to be ran as the cmaps.json is in this directory in a slightly cleaned up form.
     * Colormaps computed from images often will contain buffers which are effectively errors and need to be manually cleaned up
+    * Instead use the above add_m_cmap to add matlab cmaps
 
     Args:
         dir_path: String directory path to the colormaps directory
@@ -162,7 +247,7 @@ def process_cmap_dir(dir_path: str, out_path: str = "") -> None:
 
         if file.endswith(".tiff"):
             array_data = np.array(Image.open(f"colormaps/{file}"))[0] # Only first row since tif is identical data all the way down
-            formatted_cmap = [(int(data[0]), int(data[1]), int(data[2])) for data in array_data] # We don't need the alpha data 
+            formatted_cmap = [(int(data[0]), int(data[1]), int(data[2])) for data in array_data] # We don't need the alpha data
         elif file.endswith(".m"):
             # Call octave to convert
             formatted_cmap = parse_colormap_m(f"colormaps/{file}")
@@ -173,15 +258,36 @@ def process_cmap_dir(dir_path: str, out_path: str = "") -> None:
         # Colormap name assumed before period
         cmap_dict[file.split(".")[0]] = formatted_cmap
 
-    with open(f"{out_path}/cmaps.json", "w") as f:
-        f.write("{\n")
-        items = list(cmap_dict.items())
-        items.sort(key=lambda x: x[0])
-        for i, (name, cmap) in enumerate(items):
-            rows = ", ".join(json.dumps(row, separators=(", ", ": ")) for row in cmap)
-            comma = "," if i < len(items) - 1 else ""
-            f.write(f'  "{name}": [{rows}]{comma}\n')
-        f.write("}\n")
+    _write_cmaps_json(cmap_dict, out_path)
+
+
+def main() -> None:
+    """
+    Command line interface for the cmaps.json utilities:
+
+    python colormap_utils.py clean [--path STR]
+    python colormap_utils.py add_m_cmap PATH [--name STR] [--out-path STR]
+    """
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Utilities for cmaps.json")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    clean_parser = subparsers.add_parser("clean", help="Re-sort and reformat cmaps.json")
+    clean_parser.add_argument("--path", default="", help="Path to cmaps.json, defaults to the one next to this module")
+
+    add_parser = subparsers.add_parser("add_m_cmap", help="Append a colormap from a MATLAB .m file to cmaps.json")
+    add_parser.add_argument("path", help="Path to the MATLAB .m colormap file")
+    add_parser.add_argument("--name", default="", help="Name to store the colormap under, defaults to the file name")
+    add_parser.add_argument("--out-path", default="", help="Path to the directory containing cmaps.json, defaults to the directory this module lives in")
+
+    args = parser.parse_args()
+
+    if args.command == "clean":
+        clean_cmaps_json(args.path)
+    elif args.command == "add_m_cmap":
+        add_m_cmap(args.path, args.name, args.out_path)
+
 
 
 def _compute_statistic(data: Iterable, statistic_string: str) -> float:
@@ -226,4 +332,8 @@ def _flatten_data(data: Iterable) -> list:
         else:
             final_data.append(element)
     final_data.sort()
-    return final_data 
+    return final_data
+
+
+if __name__ == "__main__":
+    main()
