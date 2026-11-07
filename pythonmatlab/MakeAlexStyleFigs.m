@@ -94,7 +94,7 @@ if length(findstr('~',PS.MAPS_DIR))>0
     % catch first case
     str=strrep(str,['~' username],['/Users/' username]);
     % catch second case
-    str=strrep(str,['~/' ],['/Users/' username '/']);
+    str=strrep(str,'~/' ,['/Users/' username '/']);
     PS.MAPS_DIR=str;
 end
 
@@ -283,11 +283,14 @@ OutputData.mapcreated=datestr(now);
 ii=(-1455:1454)+7762/2;
 jj=(-604:0)+3947;
 
-anew=atransp;
-alphtranspnew=alphatransp;
+nr = min(numel(jj), size(aleglight,1)-80);   % rows from 81:end
+nc = min(numel(ii), size(aleglight,2));      % cols from 81:end
 
-anew(jj,ii,:)=aleglight(81:end,:,:);
-alphtranspnew(jj,ii)=alphaleglight(81:end,:,:);
+jj = jj(1:nr);                               % crop the index ranges to fit
+ii = ii(1:nc);
+
+anew(jj,ii,:) = aleglight(81:80+nr,:,:);
+alphtranspnew(jj,ii) = alphaleglight(81:80+nr,:,:);
 
 imwrite(anew,[PS.MAPS_DIR filesep PS.map_filename '_map_legend_NOT_FOR_KEYNOTE.png'],'Alpha',alphtranspnew);
 
