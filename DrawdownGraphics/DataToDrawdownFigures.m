@@ -254,7 +254,7 @@ if islogical(raster)
 end
 
 
-MakeAlexStyleFigsNew(raster,PS);
+MakeAlexStyleFigs(raster,PS);
 
 % End of python wrapper section
 

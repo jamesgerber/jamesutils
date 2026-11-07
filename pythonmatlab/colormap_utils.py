@@ -24,7 +24,7 @@ pyrun("import importlib, colormap_utils")
 % Fetch a built-in matplotlib colormap: 100 colors as hex strings and rgb triplets
 [cmap_hex, cmap_rgb] = pyrun("from colormap_utils import fetch_cmap; cmap_hex, cmap_rgb = fetch_cmap('viridis')", ["cmap_hex", "cmap_rgb"])
 hex_cell = string(cell(cmap_hex));   % 1x100 cellstr, e.g. hex_cell(1) = '#440154'
-rgb_mat = double(cmap_rgb);          % 100x3 matrix, rows are [r g b] 0-255
+rgb_mat = double(cmap_rgb/255);          % 100x3 matrix, rows are [r g b] 0-1
 
 % Fetch a custom colormap (from cmaps.json). Add '_r' to get it reversed:
 cmap = string(cell(pyrun("from colormap_utils import fetch_cmap; cmap_hex, _ = fetch_cmap('cb_brbg')", "cmap_hex")));
