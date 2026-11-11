@@ -23,8 +23,8 @@ Here is a mini-demo of how to use it.
 pyrun("import importlib, colormap_utils")
 % Fetch a built-in matplotlib colormap: 100 colors as hex strings and rgb triplets
 [cmap_hex, cmap_rgb] = pyrun("from colormap_utils import fetch_cmap; cmap_hex, cmap_rgb = fetch_cmap('viridis')", ["cmap_hex", "cmap_rgb"])
-hex_cell = string(cell(cmap_hex));   % 1x100 cellstr, e.g. hex_cell(1) = '#440154'
-rgb_mat = double(cmap_rgb/255);          % 100x3 matrix, rows are [r g b] 0-1
+hex_cell = string(cell(cmap_hex));   % 1x256 cellstr, e.g. hex_cell(1) = '#440154'
+rgb_mat = double(cmap_rgb/255);          % 256x3 matrix, rows are [r g b] 0-1
 
 % Fetch a custom colormap (from cmaps.json). Add '_r' to get it reversed:
 cmap = string(cell(pyrun("from colormap_utils import fetch_cmap; cmap_hex, _ = fetch_cmap('cb_brbg')", "cmap_hex")));
@@ -60,7 +60,7 @@ def fetch_cmap(map_name: str) -> tuple[list[str], np.ndarray]:
     For the mpl path, it simply takes the map_name and maps it to 0-100 and 
     returns it in both hex and rgb-int format
     
-    For the local path, it does the same thing but the lenght is not fixed.
+    For the local path, it does the same thing but the length is not fixed.
     TODO Add Linear Interpolation (Up to Jamie)
 
 
@@ -69,7 +69,7 @@ def fetch_cmap(map_name: str) -> tuple[list[str], np.ndarray]:
     """
     mpl_map = colormaps.get(map_name, None)
     if mpl_map:
-        colors_01 = list(mpl_map(np.linspace(0, 1, 100))) 
+        colors_01 = list(mpl_map(np.linspace(0, 1, 256))) 
         hexes = [to_hex(c) for c in colors_01]
         rgbs = [(int(round(r * 255)), int(round(g * 255)), int(round(b * 255)))
                 for r, g, b, *_ in colors_01]
