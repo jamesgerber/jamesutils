@@ -100,15 +100,12 @@ end
 
 % look for figurehandle field in NSS
 
-if isfield(NSS,'figurehandle') & isgraphics(NSS.figurehandle);
+if isfield(NSS,'figurehandle') && isgraphics(NSS.figurehandle);
     % everything fabulous, let's write to this figure
 else
     nsgfig=figure;
     NSS.figurehandle=nsgfig;
 end
-
-
-
 
 
 NSSorig=NSS;
@@ -118,16 +115,14 @@ NSSorig=NSS;
 if numel(raster)<=prod(2160*4320*4)
 % only make this if size is 2.5 minutes or larger
 
-    OS=nsg(raster,NSS);
-    OSwb=OS;
-    [status,cmdout] = unix(['cp temp.png ' outputfolder '/figs_whitebackground' filesep filenameroot '_WhiteBackground.png'])
+    [status,cmdout] = system(['cp temp.png ' outputfolder '/figs_whitebackground' filesep filenameroot '_WhiteBackground.png'])
 
     if status==0 && ~strcmp(getenv("PLOT_MODE"), "python") 
         filename=[outputfolder '/figs_blackbackground' filesep filenameroot '_BlackBackground.png'];
         maketransparentoceans_noant_nogridlinesnostates_removeislands('temp.png',filename,[1 1 1],1);
     end
 
-    titlestring=''; % need to define for call to python wrappe
+    titlestring=''; % need to define for call to python wrapper
     % now remove units
     if isfield(NSS,'title')
         titlestring=NSS.title;
@@ -137,9 +132,7 @@ if numel(raster)<=prod(2160*4320*4)
         titlestring=NSS.Title;
         NSS=rmfield(NSS,'Title');
     end
-    NSSnotitle=NSS;
 
-    OS=nsg(raster,NSS);
     [status,cmdout] = unix(['cp temp.png ' outputfolder '/figs_whitebackground_notitle' filesep filenameroot '_WhiteBackground_NoTitle.png'])
   if status==0 && ~strcmp(getenv("PLOT_MODE"), "python") 
       filename=[outputfolder '/figs_blackbackground_notitle' filesep filenameroot '_BlackBackground_NoTitle.png'];
@@ -155,8 +148,7 @@ if numel(raster)<=prod(2160*4320*4)
         unitsstring=NSS.Units;
         NSS=rmfield(NSS,'Units');
     end
-    NSSnotitlenounits=NSS;
-    OS=nsg(raster,NSS);
+
     [status,cmdout] = unix(['cp temp.png ' outputfolder '/figs_whitebackground_notitlenounits' filesep filenameroot '_WhiteBackground_NoTitleNoUnits.png'])
     if status==0 && ~strcmp(getenv("PLOT_MODE"), "python") 
         filename=[outputfolder '/figs_blackbackground_notitlenounits' filesep filenameroot '_BlackBackground_NoTitleNoUnits.png'];
@@ -183,43 +175,50 @@ if numel(raster)<=prod(2160*4320*4)
 
 %need to translate output for panoply triangles into 
 
-if isfield(OS,'panoplytrianglehandlepatches')
-    ii=OS.panoplytrianglehandlepatches>0;
-else
-    ii=[0 0];
-end
+% TO be implemented in the future
+% if isfield(OS,'panoplytrianglehandlepatches')
+%     ii=OS.panoplytrianglehandlepatches>0;
+% else
+%     ii=[0 0];
+% end
 
-if ii(1)
-    if ii(2)
-        extend_cbar='both';
-    else
-        extend_cbar='min';
-    end
-else
-    if ii(2)
-        extend_cbar='max';
-    else
-        extend_cbar='neither';
-    end
-end
+% if ii(1)
+%     if ii(2)
+%         extend_cbar='both';
+%     else
+%         extend_cbar='min';
+%     end
+% else
+%     if ii(2)
+%         extend_cbar='max';
+%     else
+%         extend_cbar='neither';
+%     end
+% end
+extend_cbar='neither';
 
 % what is full directory?
 % this code makes sure there's a full directory listing for this next part.
-% switch outputfolder(1:2)
-%     case '~/'
-%         fullMAPS_DIRstart=['/Users/' getenv('username') outputfolder(2:end)];
-%     case '/U'
-%         fullMAPS_DIRstart=[outputfolder];
-%     otherwise
-%         fullMAPS_DIRstart=[pwd filesep outputfolder];
-% end
-fullMAPS_DIRstart = getenv("MAPS_DIR");
+switch outputfolder(1:2)
+    case '~/'
+        fullMAPS_DIRstart=['/Users/' getenv('username') outputfolder(2:end)];
+    case '/U'
+        fullMAPS_DIRstart=outputfolder;
+    otherwise
+        fullMAPS_DIRstart=getenv("MAPS_DIR");
+end
+
+% fullMAPS_DIRstart = getenv("MAPS_DIR");
+
+if islogical(raster)
+    raster=single(raster);
+end
 
 clear PS
 PS.MAPS_DIR=[fullMAPS_DIRstart '/FigsStyledFor2026/'];
 PS.map_filename=filenameroot;
-PS.data_min=num2str(OS.coloraxis(1));
-PS.data_max=num2str(OS.coloraxis(2));
+PS.data_min = min(raster, [], 'all'); % TODO cmap ranges
+PS.data_max = max(raster, [], 'all'); % TODO 
 PS.cbar_title=titlestring;
 PS.cbar_units=unitsstring;
 PS.extend_cbar=extend_cbar;
@@ -229,24 +228,15 @@ PS.extend_cbar=extend_cbar;
 if isfield(NSS,'hexmap')
     PS.cmap_string=NSS.hexmap;
 else
-
-    cmap=OS.cmap_final;
-    N=length(cmap);
-    if N > 200
-        NewMap=cmap(4:end-3,1:3);
-    end
-
-    % lets ahve 20 RGBs
+    pyrun("import importlib, colormap_utils")
+    [cmap, ~] = pyrun("from colormap_utils import fetch_cmap; cmap_hex, cmap_rgb = fetch_cmap('neoncolorbar')", ["cmap_hex", "cmap_rgb"]);
+    cmap = cellstr(string(cmap));
+    N = length(cmap);
+    % lets have 20 RGBs
     Nskip=ceil(N/20);
 
-
-    ShortMap=NewMap(1:Nskip:end,:);
-
-    for j=1:length(ShortMap)
-        RGBlist{j}=rgb2hex(ShortMap(j,:));
-    end
-
-    PS.cmap_string=RGBlist;
+    ShortMap=cmap(1:Nskip:end,:);
+    PS.cmap_string=ShortMap;
 end
 
 if islogical(raster)

@@ -85,7 +85,7 @@ end
 % no '~' in MAPS_DIR
 % no numbers, need only strings
 
-if length(findstr('~',PS.MAPS_DIR))>0
+if isempty(strfind(PS.MAPS_DIR, '~'))
     warning('replacing ~ with full path name (python does not like ~)');
 
     % two possible cases:  '~username' or '~' resolves to /Users/username
@@ -242,17 +242,14 @@ end
 
 
 
-fclose(fid)
+fclose(fid);
 
-cd(getenv("PYTHON_CREATE_MAPS_DIR"))
 
 if VectorFlag==1
-    system([getenv("PYTHON_PATH")  ' ' getenv("JAMES_UTILS_PATH") '/pythonmatlab/CreateNewStyleMapsFromWrapper_vector.py'])
+    system([getenv("PYTHON_PATH")  ' ' getenv("JAMES_UTILS_PATH") '/' getenv("PYTHON_CREATE_MAPS_DIR") '/pythonmatlab/CreateNewStyleMapsFromWrapper_vector.py'])
 else
-    system([getenv("PYTHON_PATH")  ' ' getenv("JAMES_UTILS_PATH") '/pythonmatlab/CreateNewStyleMapsFromWrapper_raster.py'])
+    system([getenv("PYTHON_PATH")  ' ' getenv("JAMES_UTILS_PATH") '/' getenv("PYTHON_CREATE_MAPS_DIR") '/pythonmatlab/CreateNewStyleMapsFromWrapper_raster.py'])
 end
-
-cd(wd)
 
 stack=dbstack;
 
@@ -268,7 +265,7 @@ OutputData.raster=raster;
 end
 OutputData.PS=PS;
 OutputData.callingfunction=callingfilename;
-OutputData.mapcreated=datestr(now);
+OutputData.mapcreated=string(datetime("now"));
 
 
 % now play around with .pngs and create a version with legend
