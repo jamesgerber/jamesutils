@@ -197,22 +197,7 @@ if numel(raster)<=prod(2160*4320*4)
 % end
 extend_cbar='neither';
 
-% what is full directory?
-% this code makes sure there's a full directory listing for this next part.
-switch outputfolder(1:2)
-    case '~/'
-        fullMAPS_DIRstart=['/Users/' getenv('username') outputfolder(2:end)];
-    case '/U'
-        fullMAPS_DIRstart=outputfolder;
-    otherwise
-        fullMAPS_DIRstart=getenv("MAPS_DIR");
-end
-
-% fullMAPS_DIRstart = getenv("MAPS_DIR");
-
-if islogical(raster)
-    raster=single(raster);
-end
+fullMAPS_DIRstart=[outputfolder];
 
 clear PS
 PS.MAPS_DIR=[fullMAPS_DIRstart '/FigsStyledFor2026/'];

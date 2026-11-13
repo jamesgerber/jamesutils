@@ -7,8 +7,10 @@ function [croplandraster,pastureraster,croplandrasternan,pasturerasternan]=get20
 % 
 
 
-[long,lat,croplandraster]=processgeotiff('~/shareddrives/GeospatialDrive/ProcessedData/Landcover/MehrabiCropPastureArea2015/cropland2015.tif');
-[long,lat,pastureraster]=processgeotiff('~/shareddrives/GeospatialDrive/ProcessedData/Landcover/MehrabiCropPastureArea2015/pasture2015.tif');
+
+[long,lat,croplandraster]=processgeotiff([getenv('GEOSPATIAL_DRIVE') '/ProcessedData/Landcover/MehrabiCropPastureArea2015/cropland2015.tif']);
+[long,lat,pastureraster]=processgeotiff([getenv('GEOSPATIAL_DRIVE') '/ProcessedData/Landcover/MehrabiCropPastureArea2015/pasture2015.tif']);
+
 
 croplandrasternan=croplandraster;
 pasturerasternan=pastureraster;
