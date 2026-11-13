@@ -85,7 +85,7 @@ end
 % no '~' in MAPS_DIR
 % no numbers, need only strings
 
-if length(findstr('~',PS.MAPS_DIR))>0
+if ~isempty(strfind(PS.MAPS_DIR, '~'))
     warning('replacing ~ with full path name (python does not like ~)');
 
     % two possible cases:  '~username' or '~' resolves to /Users/username
@@ -94,7 +94,7 @@ if length(findstr('~',PS.MAPS_DIR))>0
     % catch first case
     str=strrep(str,['~' username],['/Users/' username]);
     % catch second case
-    str=strrep(str,['~/' ],['/Users/' username '/']);
+    str=strrep(str,'~/' ,['/Users/' username '/']);
     PS.MAPS_DIR=str;
 end
 
@@ -121,17 +121,13 @@ if VectorFlag==0
     globalarray2geotiff(raster,[PS.MAPS_DIR filesep 'datatifs' filesep PS.map_filename])
 end
 
-wd=pwd;
 
 workingdir=[getenv("TEMP_DIR") 'pythontempfiles/'];
-try
-    cd(workingdir)
-catch
+if ~exist(workingdir, 'dir')
     mkdir(workingdir)
-    cd(workingdir)
 end
-
-%try
+configpath=[workingdir 'mapconfig.ini'];
+setenv("MAPCONFIG_PATH", configpath)
 
 
 if VectorFlag==0
@@ -187,7 +183,7 @@ if isfield(PS,'cmapname');
 end
 
 
-fid=fopen('mapconfig.ini','w');
+fid=fopen([workingdir 'mapconfig.ini'],'w');
 fprintf(fid,'\n');
 fprintf(fid,'[MapConstants]\n')
 fprintf(fid,'MAPS_DIR = %s\n', PS.MAPS_DIR);
@@ -204,35 +200,27 @@ if isfield(PS,'data_center')
     fprintf(fid,'data_center = %s\n', PS.data_center);
 end
 
+% cmap_string: expect a list of hex codes.
 if iscell(PS.cmap_string)
-    fprintf(fid,'cmap_string = %s',PS.cmap_string{1})
-    for j=2:numel(PS.cmap_string);
-        fprintf(fid,', %s ',PS.cmap_string{j}) ;
-    end
-    fprintf(fid,'\n')
-else % it's a string.   Need to see if it's matplotlib or finemap.
-    validMaps=getMatPlotLibsMaps;
-    if any(strcmp(PS.cmap_string, validMaps))
-        fprintf(fid,'cmap_string = %s',PS.cmap_string)
-    else
-        % see if we can get finemap to work
+    cmap_list = cellstr(PS.cmap_string);
+else % not a hex list -> treat as a colormap name for python fetch
+    % TODO Talk to Jamie about a shared matlab wrapper for my python function tho maybe thats a bad idea...
+    cmapname = char(PS.cmap_string);
+    pyrun("import importlib, colormap_utils")
+    [cmap, ~] = pyrun( ...
+        sprintf(['from colormap_utils import fetch_cmap; ', ...
+                 'cmap_hex, cmap_rgb = fetch_cmap(''%s'')'], cmapname), ...
+        ["cmap_hex", "cmap_rgb"]);
+    cmap = cellstr(string(cmap));
+    N = length(cmap);
+    % lets have 20 RGBs
+    Nskip = ceil(N/20);
 
-        cmap=finemap(PS.cmap_string,'','');
-        ii=round(linspace(1,size(cmap,1),50));
-        cmap50=cmap(ii,:);
-        for j=1:numel(ii)
-            cmap_string{j}=rgb2hex(cmap(ii(j),:));
-        end
-        PS.cmap_string=cmap_string;
-
-        fprintf(fid,'cmap_string = %s',PS.cmap_string{1})
-        for j=2:numel(PS.cmap_string);
-            fprintf(fid,', %s ',PS.cmap_string{j}) ;
-        end
-        fprintf(fid,'\n')
-    end
-
+    ShortMap = cmap(1:Nskip:end,:);
+    PS.cmap_string = ShortMap;
+    cmap_list = ShortMap;
 end
+fprintf(fid, 'cmap_string = %s\n', strjoin(cmap_list, ', '));
 
 if VectorFlag==1
     fprintf(fid,'input_csv_filename = %s\n', PS.input_csv_filename);
@@ -242,17 +230,14 @@ end
 
 
 
-fclose(fid)
-
-cd(getenv("PYTHON_CREATE_MAPS_DIR"))
+fclose(fid);
 
 if VectorFlag==1
-    system([getenv("PYTHON_PATH")  ' ' getenv("JAMES_UTILS_PATH") '/pythonmatlab/CreateNewStyleMapsFromWrapper_vector.py'])
+    script='CreateNewStyleMapsFromWrapper_vector.py';
 else
-    system([getenv("PYTHON_PATH")  ' ' getenv("JAMES_UTILS_PATH") '/pythonmatlab/CreateNewStyleMapsFromWrapper_raster.py'])
+    script='CreateNewStyleMapsFromWrapper_raster.py';
 end
-
-cd(wd)
+pyrunfile([getenv("JAMES_UTILS_PATH") '/pythonmatlab/' script])
 
 stack=dbstack;
 
@@ -268,7 +253,7 @@ OutputData.raster=raster;
 end
 OutputData.PS=PS;
 OutputData.callingfunction=callingfilename;
-OutputData.mapcreated=datestr(now);
+OutputData.mapcreated=string(datetime("now"));
 
 
 % now play around with .pngs and create a version with legend
@@ -283,40 +268,13 @@ OutputData.mapcreated=datestr(now);
 ii=(-1455:1454)+7762/2;
 jj=(-604:0)+3947;
 
-anew=atransp;
-alphtranspnew=alphatransp;
+nr = min(numel(jj), size(aleglight,1)-80);   % rows from 81:end
+nc = min(numel(ii), size(aleglight,2));      % cols from 81:end
 
-anew(jj,ii,:)=aleglight(81:end,:,:);
-alphtranspnew(jj,ii)=alphaleglight(81:end,:,:);
+jj = jj(1:nr);                               % crop the index ranges to fit
+ii = ii(1:nc);
+
+anew(jj,ii,:) = aleglight(81:80+nr,:,:);
+alphtranspnew(jj,ii) = alphaleglight(81:80+nr,:,:);
 
 imwrite(anew,[PS.MAPS_DIR filesep PS.map_filename '_map_legend_NOT_FOR_KEYNOTE.png'],'Alpha',alphtranspnew);
-
-cd(wd)
-
-
-
-
-function validMaps = getMatPlotLibsMaps;
-% generated this list with ChatGPT
-validMaps =  { ...
-    'Accent','Accent_r','Blues','Blues_r','BrBG','BrBG_r','BuGn','BuGn_r', ...
-    'BuPu','BuPu_r','CMRmap','CMRmap_r','Dark2','Dark2_r','GnBu','GnBu_r', ...
-    'Greens','Greens_r','Greys','Greys_r','OrRd','OrRd_r','Oranges','Oranges_r', ...
-    'PRGn','PRGn_r','Paired','Paired_r','Pastel1','Pastel1_r','Pastel2','Pastel2_r', ...
-    'PiYG','PiYG_r','PuBu','PuBu_r','PuBuGn','PuBuGn_r','PuOr','PuOr_r', ...
-    'PuRd','PuRd_r','Purples','Purples_r','RdBu','RdBu_r','RdGy','RdGy_r', ...
-    'RdPu','RdPu_r','RdYlBu','RdYlBu_r','RdYlGn','RdYlGn_r','Reds','Reds_r', ...
-    'Set1','Set1_r','Set2','Set2_r','Set3','Set3_r','Spectral','Spectral_r', ...
-    'Wistia','Wistia_r','YlGn','YlGn_r','YlGnBu','YlGnBu_r','YlOrBr','YlOrBr_r', ...
-    'YlOrRd','YlOrRd_r','afmhot','afmhot_r','autumn','autumn_r','binary','binary_r', ...
-    'bone','bone_r','brg','brg_r','bwr','bwr_r','cool','cool_r','coolwarm','coolwarm_r', ...
-    'copper','copper_r','cubehelix','cubehelix_r','flag','flag_r','gist_earth','gist_earth_r', ...
-    'gist_gray','gist_gray_r','gist_heat','gist_heat_r','gist_ncar','gist_ncar_r', ...
-    'gist_rainbow','gist_rainbow_r','gist_stern','gist_stern_r','gist_yarg','gist_yarg_r', ...
-    'gnuplot','gnuplot_r','gnuplot2','gnuplot2_r','gray','gray_r','hot','hot_r', ...
-    'hsv','hsv_r','inferno','inferno_r','jet','jet_r','magma','magma_r','nipy_spectral','nipy_spectral_r', ...
-    'ocean','ocean_r','pink','pink_r','prism','prism_r','rainbow','rainbow_r','seismic','seismic_r', ...
-    'spring','spring_r','summer','summer_r','tab10','tab10_r','tab20','tab20_r', ...
-    'tab20b','tab20b_r','tab20c','tab20c_r','terrain','terrain_r','turbo','turbo_r', ...
-    'twilight','twilight_r','twilight_shifted','twilight_shifted_r','viridis','viridis_r','winter','winter_r' ...
-};

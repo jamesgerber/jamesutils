@@ -9,10 +9,10 @@ function LogicalVector=landmasklogical(DataTemplate)
 %        the size of DataTemplate (if DataTemplate is 5 or 10 mins)
 
 persistent LogicalLandMaskVector
-
+LANDMASK_5_MIN=getenv("LANDMASK_5_MIN");
+LANDMASK_30_MIN=getenv("LANDMASK_30_MIN");
 if isempty(LogicalLandMaskVector)
-    SystemGlobals
-    [Long,Lat,Data]=opennetcdf(LANDMASK_5MIN);
+    [Long,Lat,Data]=opennetcdf(LANDMASK_5_MIN);
     LogicalLandMaskVector=(Data>0);
 end
 
@@ -42,7 +42,7 @@ switch numel(DataTemplate)
     case 720*360  %30min / .5 degree
         SystemGlobals
         try
-            [Long,Lat,Data]=aOpenNetCDF(LANDMASK_30MIN);
+            [Long,Lat,Data]=aOpenNetCDF(LANDMASK_30_MIN);
         catch
             warning(' didn''t find LANDMASK_30MIN.  downsampling 5min landmask. ')
             lml=LandMaskLogical;

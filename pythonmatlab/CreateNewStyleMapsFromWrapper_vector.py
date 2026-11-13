@@ -2,6 +2,7 @@
 
 
 ## import packages
+import gc
 import os
 import sys
 import geopandas as gpd
@@ -19,12 +20,10 @@ from matplotlib.colors import Normalize, BoundaryNorm, ListedColormap, LinearSeg
 
 # next two lines from ChatGPT with prompt about script pausing for windows.
 import matplotlib
-matplotlib.use('macosx')
 
 import matplotlib.pyplot as plt
 import numpy as np
 ## plotting libraries
-import matplotlib.pyplot as plt
 
 # this makes plots not appear later. (I hope)
 plt.ioff()
@@ -37,7 +36,7 @@ from dotenv import load_dotenv
 load_dotenv('../../.env.local', verbose=True)
 
 ## set working directory to root project folder to import utils
-ROOT_DIR = os.path.abspath('/Users/jsgerber/source/pd-create-maps/')
+ROOT_DIR = os.getenv('PYTHON_CREATE_MAPS_DIR') #os.path.abspath('/Users/jsgerber/source/pd-create-maps/')
 # print(ROOT_DIR)
 sys.path.insert(0, ROOT_DIR)
 
@@ -48,7 +47,6 @@ print(sys.path)
 # %%
 
 print('debugging section')
-import matplotlib
 import numpy
 import rasterio
 import xarray
@@ -62,12 +60,6 @@ print("xarray:", xarray.__version__)
 print("rioxarray:", rioxarray.__version__)
 print("pyproj:", pyproj.__version__)
 
-import matplotlib
-print(matplotlib.get_backend())
-matplotlib.use("macosx")
-print(matplotlib.get_backend())
-import matplotlib
-print(matplotlib.get_backend())
 # import utils
 import utils.presentation_maps_utils as mapping_utils
 import utils.raster_utils as raster_utils
@@ -133,7 +125,7 @@ config = configparser.ConfigParser(
     inline_comment_prefixes=(';')
 )
 
-config.read('/Users/jsgerber/temp/pythontempfiles/mapconfig.ini')
+config.read( os.getenv("MAPCONFIG_PATH", f'{os.getenv('MAP')}/pythontempfiles/mapconfig.ini'))
 MAPS_DIR=config.get('MapConstants','MAPS_DIR')
 input_csv_filename=config.get('MapConstants','input_csv_filename')
 map_filename=config.get('MapConstants','map_filename')
@@ -181,9 +173,6 @@ cmap_colors = parse_colormap_colors(config)
 cmap = make_cmap(cmap_colors)
 
 ## end trying
-
-
-print(matplotlib.get_backend())
 
 
 ## open raster, reproject to robinson, and clip to admin boundaries
@@ -250,7 +239,6 @@ mapping_utils.plot_global_divergent_vector_maponly(
 
 
 
-print(matplotlib.get_backend())
 
 ## export legends
 mapping_utils.export_alllegends_continuous_cbar(
@@ -267,6 +255,7 @@ mapping_utils.export_alllegends_continuous_cbar(
     #cbar_max=round(data_percile, 2)
 )
 
-import sys
-print(sys.executable)
-print(sys.version)
+
+
+plt.close('all')
+gc.collect() 

@@ -2,6 +2,7 @@
 
 
 ## import packages
+import gc
 import os
 import sys
 import xarray as xr
@@ -13,7 +14,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 ## plotting libraries
-import matplotlib.pyplot as plt
 
 # this makes plots not appear later. (I hope)
 plt.ioff()
@@ -42,7 +42,6 @@ print(sys.path)
 # %%
 
 print('debugging section')
-import matplotlib
 import numpy
 import rasterio
 import xarray
@@ -56,7 +55,6 @@ print("xarray:", xarray.__version__)
 print("rioxarray:", rioxarray.__version__)
 print("pyproj:", pyproj.__version__)
 
-import matplotlib
 # import utils
 import utils.presentation_maps_utils as mapping_utils
 import utils.raster_utils as raster_utils
@@ -121,7 +119,7 @@ config = configparser.ConfigParser(
     inline_comment_prefixes=(';')
 )
 
-config.read(f'{os.getenv('TEMP_DIR')}/pythontempfiles/mapconfig.ini')#('/Users/jsgerber/temp/pythontempfiles/mapconfig.ini')
+config.read( os.getenv("MAPCONFIG_PATH", f'{os.getenv('TEMP_DIR')}/pythontempfiles/mapconfig.ini'))#('/Users/jsgerber/temp/pythontempfiles/mapconfig.ini')
 MAPS_DIR=config.get('MapConstants','MAPS_DIR')
 input_tif_filename=config.get('MapConstants','input_tif_filename')
 map_filename=config.get('MapConstants','map_filename')
@@ -168,8 +166,6 @@ cmap = make_cmap(cmap_colors)
 
 ## end trying
 
-
-print(matplotlib.get_backend())
 
 
 ## open raster, reproject to robinson, and clip to admin boundaries
@@ -235,8 +231,6 @@ mapping_utils.plot_global_continous_rasters_justpixels(
 
 
 
-print(matplotlib.get_backend())
-
 ## export legends
 mapping_utils.export_alllegends_continuous_cbar(
     cmap=cmap,
@@ -252,6 +246,6 @@ mapping_utils.export_alllegends_continuous_cbar(
     #cbar_max=round(data_percile, 2)
 )
 
-import sys
-print(sys.executable)
-print(sys.version)
+
+plt.close('all')
+gc.collect() 
