@@ -2,9 +2,9 @@ function zoomButtons(InputFlag)
 switch(InputFlag)
     case 'Initialize'
         uicontrol('String','Zoom Out','Callback', ...
-            'zoomButtons(''zoomout'');','position',NextButtonCoords);  
+            'zoomButtons(''zoomout'');','position',nextbuttoncoords);  
         uicontrol('String','Zoom','Callback', ...
-            'zoomButtons(''zoom'')','position',NextButtonCoords);     
+            'zoomButtons(''zoom'')','position',nextbuttoncoords);     
     case 'zoomout'
         zoom(gcbf,'off');
         UDS=get(gcbf,'UserData');

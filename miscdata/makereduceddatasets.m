@@ -33,7 +33,7 @@ switch(InputFlag)
     
     case 'Initialize'
         uicontrol('String','Reduce','Callback', ...
-            'MakeReducedDataSets(''Reduce'')','position',NextButtonCoords);
+            'MakeReducedDataSets(''Reduce'')','position',nextbuttoncoords);
         
     case 'Reduce'
         

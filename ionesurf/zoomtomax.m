@@ -17,9 +17,9 @@ InputFlag=varargin{1};
 switch(InputFlag)
     case 'Initialize'
         uicontrol('String','Zoom to max','Callback', ...
-            'ZoomToMax(''ZoomIn'')','position',NextButtonCoords);
+            'zoomtomax(''ZoomIn'')','position',nextbuttoncoords);
         uicontrol('String','Zoom Out','Callback', ...
-            'ZoomToMax(''ZoomOut'');','position',NextButtonCoords);
+            'zoomtomax(''ZoomOut'');','position',nextbuttoncoords);
         
     case 'ZoomIn'
         % find maximum, zoom in       
@@ -131,7 +131,7 @@ switch(InputFlag)
     case 'ZoomOut'
         
         try
-            CanMap=CheckForMappingToolbox;
+            CanMap=checkformappingtoolbox;
         catch
             disp(['problem with Mapping Toolbox check in ' mfilename]);
             CanMap=0;

@@ -14,7 +14,7 @@ InputFlag=varargin{1};
 switch(InputFlag)
     case 'Initialize'
         uicontrol('String','Summary','Callback', ...
-            'WorldSummary(''MakeSummary'')','position',NextButtonCoords);
+            'worldsummary(''MakeSummary'')','position',nextbuttoncoords);
     case 'MakeSummary'
         
         ha=get(gcbf,'CurrentAxes');

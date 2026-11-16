@@ -3,9 +3,9 @@ function selectCategory(InputFlag)
 switch(InputFlag)
     case 'Initialize'
         uicontrol('String','Clear','Callback', ...
-            'selectCategory(''clear'');','position',NextButtonCoords);
+            'selectCategory(''clear'');','position',nextbuttoncoords);
         uicontrol('String','Select Climate','Callback', ...
-            'selectCategory(''select'')','position',NextButtonCoords);
+            'selectCategory(''select'')','position',nextbuttoncoords);
     case 'select'
         zoom(gcbf,'off');
         UDS=get(gcbf,'UserData');

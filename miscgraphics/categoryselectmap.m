@@ -145,8 +145,8 @@ selectCategory('Initialize');
 AddStatesCallback('Initialize');
 zoomButtons('Initialize');
 
-clear NextButtonCoords
-position=NextButtonCoords;
+clear nextbuttoncoords
+position=nextbuttoncoords;
 position(4)=100;
 ConsoleAxisHandle=axes('units','pixels','Position',position);
 set(ConsoleAxisHandle,'units','normalized');

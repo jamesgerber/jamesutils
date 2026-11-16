@@ -1,4 +1,4 @@
-function HideUI;
+function hideui;
 % HIDEUI - hide uicontrols in the current figure
 %
 %  See Also ShowUI

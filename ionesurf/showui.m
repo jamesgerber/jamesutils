@@ -1,7 +1,7 @@
 function ShowUI;
 % ShowUI - show uicontrols in the current figure
 %
-%  See Also HideUI
+%  See Also hideui
 Hfig=gcf;
 
 h=get(Hfig,'children');

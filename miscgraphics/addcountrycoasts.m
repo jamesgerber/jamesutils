@@ -7,7 +7,7 @@ function AddCountryCoasts(ListOfCountries,LineWidth,LineColor,HFig);
 %
 %  AddCountryCoasts({'MEX','FRA','ITA'},0.5,[1 .5 .5])  will add some fuschia lines
 %
-%  See Also  AddStates AddCoasts
+%  See Also  addstates AddCoasts
 %
 %  Note that the three-digit code are the ISO codes, not the FAO codes.
 %

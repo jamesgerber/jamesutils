@@ -1,4 +1,4 @@
-function Location=NextButtonCoords;
+function Location=nextbuttoncoords;
 % NEXTBUTTONCOORDS - determine button location
 
 persistent c

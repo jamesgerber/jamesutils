@@ -80,7 +80,7 @@ end
 %% toolbox.
 %% took this out ... only want to pass in real long/lat.  
 % try
-%     CanMap=CheckForMappingToolbox;
+%     CanMap=checkformappingtoolbox;
 %     if CanMap==1;
 %         longlist=longlist*(180/pi);
 %         latlist=latlist*(180/pi);

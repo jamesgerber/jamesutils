@@ -6,7 +6,7 @@ function AddCoasts(LineWidth,HFig);
 %  AddCoasts(N) where N is an integer will add lines of default thickness
 %  (0.5) to figure N.   [This was added for backwards compatibility]
 %
-%  See Also  AddStates
+%  See Also  addstates
 if nargin==0
   HFig=gcf;
   LineWidth=0.5;
@@ -43,7 +43,7 @@ holdstatus=ishold;
 hold on
 
 %try
-%    CanMap=CheckForMappingToolbox;
+%    CanMap=checkformappingtoolbox;
 %catch
 %    disp(['problem with Mapping Toolbox check in ' mfilename]);
 %    CanMap=0;

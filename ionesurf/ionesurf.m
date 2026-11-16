@@ -52,7 +52,7 @@ end
 % end
 
 
-CanMap=CheckForMappingToolbox;
+CanMap=checkformappingtoolbox;
 
 ExtraCommands='';
 PretendOneNargin=0;
@@ -299,18 +299,18 @@ UserDataStructure.titlestring=TitleStr;
 
 
 % now make graphics
-clear NextButtonCoords
+clear nextbuttoncoords
 
-WorldSummary('Initialize');
-ZoomToMax('Initialize');
-ZoomToMin('Initialize');
-MakeReducedDataSets('Initialize');
-AddCoastCallback('Initialize');
-ZoomToContinent('Initialize');
-PropagateLimits('Initialize');
-OutputFig('Initialize');
-IonEButtonDownFunctions('Initialize');
-PropagateCaxis('Initialize');
+worldsummary('Initialize');
+zoomtomax('Initialize');
+zoomtomin('Initialize');
+makereduceddatasets('Initialize');
+addcoastcallback('Initialize');
+zoomtocontinent('Initialize');
+propagatelimits('Initialize');
+outputfig('Initialize');
+ionebuttondownfunctions('Initialize');
+propagatecaxis('Initialize');
 
 
 %% Add Console
@@ -327,8 +327,8 @@ vis=get(UserDataStructure.DataAxisHandle,'visible');
 set(UserDataStructure.DataAxisHandle,'visible',vis);
 axes(UserDataStructure.DataAxisHandle);
 
-if CheckForMappingToolbox;
-    ChangeProjection('Initialize');
+if checkformappingtoolbox;
+    changeprojection('Initialize');
 end
 
 

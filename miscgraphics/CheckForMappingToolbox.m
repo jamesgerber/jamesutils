@@ -1,9 +1,9 @@
-function  CanMap=CheckForMappingToolbox;
+function  CanMap=checkformappingtoolbox;
 % CHECKFORMAPPINGTOOLBOX - check to see if mapping toolbox is available
 %
 %  Syntax
 %
-%    CheckForMappingToolbox
+%    checkformappingtoolbox
 %
 %   See Also  mappingoff mappingon
 

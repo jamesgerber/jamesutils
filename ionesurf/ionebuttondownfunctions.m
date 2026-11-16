@@ -11,7 +11,7 @@ CallbackString=['Figure Zoom|Zoom To Point|Point Data'];
 
 switch(InputFlag)
     case 'Initialize'
-        position=NextButtonCoords;
+        position=nextbuttoncoords;
         %%%[20 65 100 20]
         uicontrol('style','popupmenu','String',CallbackString,'Callback', ...
             'IonEButtonDownFunctions(''ChangeButtonBehaviorCallback'')',...
@@ -52,7 +52,7 @@ geo1=load([iddstring '/AdminBoundary2020/gadm36_level1raster5minVer0.mat']);
 if strcmp(get(src,'SelectionType'),'normal')
     
     UDS=get(gcbf,'UserData');
-    if CheckForMappingToolbox
+    if checkformappingtoolbox
         cp=gcpmap;
         y=cp(1,1);
         x=cp(1,2);
@@ -137,7 +137,7 @@ if strcmp(get(src,'SelectionType'),'normal')
     cp=get(UDS.DataAxisHandle,'CurrentPoint');
     y1=cp(1,2);
     x1=cp(1,1);
-    if CheckForMappingToolbox
+    if checkformappingtoolbox
         cp=gcpmap;
         y=cp(1,1);
         x=cp(1,2);

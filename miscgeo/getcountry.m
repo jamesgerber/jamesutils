@@ -70,7 +70,7 @@ end
 %% possibly need to correct longlist, latlist if we are using the mapping
 %% toolbox.
 % % try
-% %     CanMap=CheckForMappingToolbox;
+% %     CanMap=checkformappingtoolbox;
 % %     if CanMap==1;
 % %         longlist=longlist*(180/pi);
 % %         latlist=latlist*(90/pi);

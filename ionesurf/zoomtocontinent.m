@@ -10,13 +10,13 @@ InputFlag=varargin{1};
 switch(InputFlag)
     case 'Initialize'
         uicontrol('style','popupmenu','String','pick a continent|North America|Europe|Asia|Africa|South America|Australia|World','Callback', ...
-            'ZoomToContinent(''ZoomIn'')','position',NextButtonCoords);	
+            'ZoomToContinent(''ZoomIn'')','position',nextbuttoncoords);	
 
     case 'ZoomIn'
  
         % get scaling factor
         try
-            CanMap=CheckForMappingToolbox;
+            CanMap=checkformappingtoolbox;
         catch
             disp(['problem with Mapping Toolbox check in ' mfilename]);
             CanMap=0;

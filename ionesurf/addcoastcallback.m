@@ -12,12 +12,12 @@ switch(InputFlag)
     case 'Initialize'
        
         uicontrol('String','Add Coastline','Callback', ...
-            'AddCoastCallback(''AddCoast'')','position',NextButtonCoords);
+            'AddCoastCallback(''AddCoast'')','position',nextbuttoncoords);
         
     case 'AddCoast'
         % find maximum, zoom in       
         
-        AddStates(gcbf);
+        addstates(gcbf);
     otherwise
         error('syntax error in AddCoastCallBack.m')
         

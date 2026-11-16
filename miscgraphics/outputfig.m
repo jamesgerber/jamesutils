@@ -30,7 +30,7 @@ if nargin>0
                 MakeSafe=1;
             case 'Initialize'
                 uicontrol('String','OutputFig','Callback', ...
-                    'OutputFig(gcf,'''',''-r300'',-1);','position',NextButtonCoords);  
+                    'OutputFig(gcf,'''',''-r300'',-1);','position',nextbuttoncoords);  
                 Hfig=gcf;
                 ForcePlots=0;
                 return
@@ -149,7 +149,7 @@ else
 end
     
     
-HideUI;
+hideui;
 ppm=get(gcf,'PaperPositionMode');
 set(gcf,'PaperPositionMode','auto');
 

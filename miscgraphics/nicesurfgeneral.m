@@ -147,7 +147,7 @@ function OS=NiceSurfGeneral(varargin)
 %   OSS will contain field coloraxis, and no plot will be made.
 %
 %
-%   See Also:  ionesurf ShowUi HideUI FastSurf
+%   See Also:  ionesurf ShowUi hideui FastSurf
 
 % desired changes
 %  - fix cvector warning in underlying ionesurf code
@@ -228,7 +228,7 @@ if isstruct(Data)
     %    Data(Data==MissingValue)=NaN;
 else
     if assignedlatlong==0
-        [Long,Lat]=InferLongLat(Data);
+        [Long,Lat]=inferlonglat(Data);
     end
 end
 
@@ -725,7 +725,7 @@ if Long(1) <= -179
     size(ii);
     size(Data);
    if ~isoctave
-       ii=EasyInterp2(ii,size(Data,1),size(Data,2),'nearest');
+       ii=easyinterp2(ii,size(Data,1),size(Data,2),'nearest');
    end
    Data(ii)=OceanVal;
 else
@@ -786,7 +786,7 @@ if isequal(plotflag,'off')   %if nargout ~= 0, need to keep going so as to defin
     return
 end
 
-%%%%%  this didn't work because of an incompatibility with AddStates in
+%%%%%  this didn't work because of an incompatibility with addstates in
 %%%%%  ionesurf.   The idea here was to only plot a part of the globe so as
 %%%%%  to make these mappings faster.
 % Check to see if lat/long is limited
@@ -862,21 +862,21 @@ switch(lower(plotstates))
     case {'off','none'}
         % do nothing
     case {'bric','bricnafta','nafta'}
-        AddStates(statewidth,gcf,'bricnafta');
+        addstates(statewidth,gcf,'bricnafta');
     case {'world','lev0'}
-        AddStates(statewidth,gcf,'all');
+        addstates(statewidth,gcf,'all');
     case {'gadm0','countries'}
-        AddStates(statewidth,gcf,'gadm0');
+        addstates(statewidth,gcf,'gadm0');
     case {'gadm1'}
-        AddStates(statewidth,gcf,'gadm1');
+        addstates(statewidth,gcf,'gadm1');
     case {'agplaces'}
-        AddStates(statewidth,gcf,'AgPlaces');
+        addstates(statewidth,gcf,'AgPlaces');
     case {'countrieslight','lightcountries'}
-        AddStates(statewidth,gcf,'countrieslight');
+        addstates(statewidth,gcf,'countrieslight');
 
         
     otherwise
-        error(['have not yet implemented this in AddStates'])
+        error(['have not yet implemented this in addstates'])
 end
 
 
@@ -1089,7 +1089,7 @@ if ~isempty(displaynotes)
     axes(mainaxes);
 end
 
-HideUI
+hideui
 
 
 

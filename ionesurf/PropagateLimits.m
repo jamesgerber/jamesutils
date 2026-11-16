@@ -12,7 +12,7 @@ InputFlag=varargin{1};
 switch(InputFlag)
     case 'Initialize'
         uicontrol('String','Export Limits','Callback', ...
-            'PropagateLimits(''Export'')','position',NextButtonCoords);	
+            'PropagateLimits(''Export'')','position',nextbuttoncoords);	
 
  case 'Export'
   %%% get the limits of this axis  

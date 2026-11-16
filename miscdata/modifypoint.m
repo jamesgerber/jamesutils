@@ -3,9 +3,9 @@ function modifyPoint(InputFlag)
 switch(InputFlag)
     case 'Initialize'
         uicontrol('String','Modify Point','Callback', ...
-            'modifyPoint(''mod'');','position',NextButtonCoords);     
+            'modifyPoint(''mod'');','position',nextbuttoncoords);     
         uicontrol('String','Get Value','Callback', ...
-            'modifyPoint(''val'');','position',NextButtonCoords);   
+            'modifyPoint(''val'');','position',nextbuttoncoords);   
     case 'mod'
         zoom(gcbf,'off');
         set(gcbf,'WindowButtonDownFcn',@SelectClickCallback);

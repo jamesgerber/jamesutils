@@ -1,13 +1,13 @@
-function AddStates(LineWidth,HFig,AllStates,latoff,longoff);
+function addstates(LineWidth,HFig,AllStates,latoff,longoff);
 %  ADDSTATES - add country boundaries and some state boundaries
 %
-%  AddStates(0.1)  will add some very thin lines
+%  addstates(0.1)  will add some very thin lines
 %
-%  AddStates(N) where N is an integer will add lines of default thickness
+%  addstates(N) where N is an integer will add lines of default thickness
 %  (0.5) to figure N.   [This was added for backwards compatibility]
 %
-%  AddStates all  will add all state boundaries (gadm 1.0, level 1)
-%  AddStates world  will add all state boundaries (gadm 1.0, level 1)
+%  addstates all  will add all state boundaries (gadm 1.0, level 1)
+%  addstates world  will add all state boundaries (gadm 1.0, level 1)
 %
 %  See Also  AddCoasts
 
@@ -20,7 +20,7 @@ end
 
 if nargin==1 & (isequal(lower(LineWidth),'all') | ...
         isequal(lower(LineWidth),'world'));
-    AddStates(0.5,gcf,'all');
+    addstates(0.5,gcf,'all');
     return
 end
 
@@ -98,7 +98,7 @@ holdstatus=ishold;
 hold on
 
 try
-    CanMap=CheckForMappingToolbox;
+    CanMap=checkformappingtoolbox;
 catch
     disp(['problem with Mapping Toolbox check in ' mfilename]);
     CanMap=0;

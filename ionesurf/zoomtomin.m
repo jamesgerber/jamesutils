@@ -11,7 +11,7 @@ InputFlag=varargin{1};
 switch(InputFlag)
     case 'Initialize'
         uicontrol('String','Zoom to min','Callback', ...
-            'ZoomToMin(''ZoomIn'')','position',NextButtonCoords);
+            'ZoomToMin(''ZoomIn'')','position',nextbuttoncoords);
     case 'ZoomIn'
         % find minimum, zoom in
         

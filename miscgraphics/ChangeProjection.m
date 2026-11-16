@@ -1,5 +1,5 @@
-function ChangeProjection(varargin);
-% ChangeProjection - Change projection of map. Helper for IonESurf.
+function changeprojection(varargin);
+% changeprojection - Change projection of map. Helper for IonESurf.
 %
 if nargin==0
     help(mfilename);
@@ -28,7 +28,7 @@ end
 switch(InputFlag)
     case 'Initialize'
         uicontrol('style','popupmenu','String',CallbackString,'Callback', ...
-            'ChangeProjection(''ChangeProjectionCallback'')','Position',[5,320,120,25]);
+            'changeprojection(''ChangeProjectionCallback'')','Position',[5,320,120,25]);
         
     case 'ChangeProjectionCallback'
         
