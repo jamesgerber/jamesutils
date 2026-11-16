@@ -28,11 +28,11 @@ import configparser
 
 # load environment file
 from dotenv import load_dotenv
-load_dotenv('../../.env.local', verbose=True)
+load_dotenv('/Users/jsgerber/source/pd-create-maps/.env.local', verbose=True)
 
 ## set working directory to root project folder to import utils
 ROOT_DIR = os.getenv('PYTHON_CREATE_MAPS_DIR')#os.path.abspath('/Users/jsgerber/source/pd-create-maps/')
-# print(ROOT_DIR)
+print(ROOT_DIR)
 sys.path.insert(0, ROOT_DIR)
 
 sys.path.append(f'{ROOT_DIR}/utils/')

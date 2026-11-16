@@ -187,7 +187,8 @@ if isfield(PS,'cmapname');
 end
 
 
-fid=fopen('mapconfig.ini','w');
+%fid=fopen('mapconfig.ini','w');
+fid=fopen([getenv("TEMP_DIR") '/pythontempfiles/mapconfig.ini'],'w');
 fprintf(fid,'\n');
 fprintf(fid,'[MapConstants]\n')
 fprintf(fid,'MAPS_DIR = %s\n', PS.MAPS_DIR);
